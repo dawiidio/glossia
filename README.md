@@ -113,34 +113,7 @@ function App() {
 Glossia theming system is completely based on native CSS. It only gives you nice JS api to work with CSS variables and
 classes. Themes are composed of variants which are building blocks. You can think about it like this: property is
 variable to which you can assign variant, variant is value you assign to property. Themes are sets of variants, when you
-activate theme it assigns it's variants to corresponding properties. Property may be used directly in styles like this:
-
-```tsx
-const bg = createProperty('bg-color', {
-    default: createVariant('white'),
-    secondary: createVariant('green'),
-});
-
-const useStyles = createUseStyles({
-    test: {
-        backgroundColor: bg,
-    }
-});
-```
-
-above example will be later translated to CSS like this:
-
-```css
-:root {
-    --bg-color-default: 'white';
-    --bg-color-secondary: 'green';
-    --bg-color: var(--bg-color-default);
-}
-
-.test {
-    background-color: var(--bg-color);
-}
-```
+activate theme it assigns it's variants to corresponding properties.
 
 ### Variants
 
@@ -200,18 +173,18 @@ but above notation will not create new variable, it will overwrite value for pro
 Property is variable to which you can assign value (variant) then you can use property in styles and it will track
 changes. When property value changes styles follows without rerenders because property is just a CSS variable
 
-```tsx
-export const bgColor = createProperty('bg-color', {
-    default: createVariant('blue') // default variant will be set as initial value for property
-});
-```
-
-you can create property with more than one variant
+Property may be used directly in styles like this:
 
 ```tsx
-export const bgColor = createProperty('bg-color', {
+const bg = createProperty('bg-color', {
     default: createVariant('white'),
     secondary: createVariant('green'),
+});
+
+const useStyles = createUseStyles({
+    test: {
+        backgroundColor: bg,
+    }
 });
 ```
 
@@ -222,6 +195,10 @@ above example will be later translated to CSS like this:
     --bg-color-default: 'white';
     --bg-color-secondary: 'green';
     --bg-color: var(--bg-color-default);
+}
+
+.test {
+    background-color: var(--bg-color);
 }
 ```
 
@@ -276,6 +253,30 @@ export const virtualProp = createVirtualProperty('test-virtual', {
 });
 ```
 
+### Properties setup
+For property to work correctly it must be passed in context
+
+```tsx
+export const bg = createProperty('bg-color', {
+    default: primaryColor.variants.default, // this notation do not create new variable it assign variant variable to this property variable
+});
+
+const glossiaContext = GlossiaContextManager.createContext({
+    properties: [
+        bg
+    ],
+});
+
+ReactDOM.render(
+    <React.StrictMode>
+        <GlossiaContextProvider value={glossiaContext}>
+            <App />
+        </GlossiaContextProvider>
+    </React.StrictMode>,
+    document.getElementById('root'),
+);
+```
+
 ### Themes
 
 Themes are compositions of variants, they are like masks for properties. When theme is activated it's variants are being
@@ -327,6 +328,25 @@ function App() {
         </div>
     );
 }
+
+const glossiaContext = GlossiaContextManager.createContext({
+    properties: [
+        bg
+    ],
+    themes: [
+        greenTheme,
+        redTheme
+    ]
+});
+
+ReactDOM.render(
+    <React.StrictMode>
+        <GlossiaContextProvider value={glossiaContext}>
+            <App />
+        </GlossiaContextProvider>
+    </React.StrictMode>,
+    document.getElementById('root'),
+);
 ```
 
 Theme may be easily switched like this:
@@ -469,7 +489,7 @@ app.get('/', async (req, res) => {
 });
 ```
 
-# Known issues
+## Known issues
 
 I know I messed up some types, for example `createUseStyles` has a bug and props are extracted not exactly like they
 should be. Correct solution involves nested iterations in TS but yet I had not enough time to solve problem.
