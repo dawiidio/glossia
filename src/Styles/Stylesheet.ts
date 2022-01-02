@@ -6,10 +6,10 @@ import { parseStylesObject } from './parseStylesObject';
 import { fixMediaRules } from '../common';
 
 export class Stylesheet<T> {
-    public staticStyles: IStaticStyles = {};
-    public dynamicStyles: IStylesObject<T>;
-    public staticClassesMapping: Record<string, string> = {};
-    public parsedStaticStyles: IFlatStylesObject = {};
+    staticStyles: IStaticStyles = {};
+    dynamicStyles: IStylesObject<T>;
+    staticClassesMapping: Record<string, string> = {};
+    parsedStaticStyles: IFlatStylesObject = {};
 
     constructor(styles: IStylesObject<T>, ruleInterceptor?: IRuleInterceptor) {
         const {
@@ -25,7 +25,7 @@ export class Stylesheet<T> {
         this.parsedStaticStyles = fixMediaRules(this.staticStyles);
     }
 
-    parseDynamicStyles(props: T, ruleInterceptor?: IRuleInterceptor): {styles: IStaticStyles, classesMapping: Record<string, string>, parsedStyles: Record<string, string>} {
+    parseDynamicStyles(props: T, ruleInterceptor?: IRuleInterceptor): { styles: IStaticStyles, classesMapping: Record<string, string>, parsedStyles: Record<string, string> } {
         if (!this.dynamicStyles)
             throw new Error(`Styles not parsed yet`);
 
@@ -39,15 +39,15 @@ export class Stylesheet<T> {
         return {
             styles: staticStyles,
             classesMapping: staticClassesMapping,
-            parsedStyles: fixMediaRules(staticStyles)
+            parsedStyles: fixMediaRules(staticStyles),
         };
     }
 
     mergeWithStaticClassesMapping(classesMapping: Record<string, string>) {
         return {
             ...this.staticClassesMapping,
-            ...classesMapping
-        }
+            ...classesMapping,
+        };
     }
 
     destroy() {
