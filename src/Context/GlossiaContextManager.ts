@@ -17,7 +17,7 @@ const getId = (): number => Math.round(Math.random() * 1e6);
 
 export interface ICreateContext {
     ssr?: boolean;
-    properties?: Array<IProperty<any>|IVirtualProperty<any>>;
+    properties?: Array<IProperty<any> | IVirtualProperty<any>>;
     themes?: ITheme[];
 }
 
@@ -53,7 +53,7 @@ export class GlossiaContextManager {
             propertyAdapter,
             properties,
             themes,
-            ssr
+            ssr,
         );
 
         this.contexts.set(ctxId, ctx);
@@ -65,6 +65,14 @@ export class GlossiaContextManager {
         this.contexts.delete(context.id);
 
         context.destroy();
+    }
+
+    static getContextById(id: number): RenderContext | undefined {
+        return this.contexts.get(id);
+    }
+
+    static getContextByIndex(index: number): RenderContext | undefined {
+        return [...this.contexts.values()][index];
     }
 
     static createStaticStyles<T>(styles: IStylesObject<T>): StaticStyles {

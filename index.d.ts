@@ -1,4 +1,5 @@
 import { CSSProperties, FC, Context } from 'react';
+import { RenderContext } from './src/Context/RenderContext';
 
 export interface IStylesObject<T = {}> {
     [key: string]: CSSProperties | IPropertiesFactory<T> | IStylesObject<T> | string | number | IProperty<any>;
@@ -137,12 +138,22 @@ export interface IStaticStyles {
     readonly counterValue: number;
 }
 
+export interface ICreateContext {
+    ssr?: boolean;
+    properties?: Array<IProperty<any> | IVirtualProperty<any>>;
+    themes?: ITheme[];
+}
+
 export class GlossiaContextManager {
-    static createContext(): IRenderContext;
+    static createContext(options?: ICreateContext): IRenderContext;
 
     static destroyContext(context: IRenderContext);
 
     static createStaticStyles<T>(styles: IStylesObject<T>): IStaticStyles;
+
+    static getContextByIndex(index: number): RenderContext | undefined
+
+    static getContextById(id: number): RenderContext | undefined
 }
 
 export interface IVariant {

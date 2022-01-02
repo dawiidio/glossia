@@ -1,10 +1,8 @@
 import React, { createContext, FC } from 'react';
 import { RenderContext } from '../Context/RenderContext';
-import { GlossiaContextManager } from '../Context/GlossiaContextManager';
 
-export const GlossiaReactContext = createContext<RenderContext>(
-    GlossiaContextManager.createContext()
-);
+// @ts-ignore
+export const GlossiaReactContext = createContext<RenderContext>();
 
 export interface ReactContextProviderProps {
     value: RenderContext
