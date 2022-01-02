@@ -1,37 +1,41 @@
 import { CSSProperties, FC, Context } from 'react';
 
 export interface IStylesObject<T = {}> {
-    [key: string]: CSSProperties | IPropertiesFactory<T> | IStylesObject<T> | string | number | IProperty<any>
+    [key: string]: CSSProperties | IPropertiesFactory<T> | IStylesObject<T> | string | number | IProperty<any>;
 }
 
-export type FnType = (...args:any[]) => any;
+export type FnType = (...args: any[]) => any;
 export type GetArgs<Fn> = Fn extends FnType ? Parameters<Fn>[0] : never;
 
 export const GlossiaReactContext: Context<IRenderContext>;
 
-export const GlossiaContextProvider: FC<IReactContextProviderProps>
+export const GlossiaContextProvider: FC<IReactContextProviderProps>;
 
 export interface IReactContextProviderProps {
-    value: IRenderContext
+    value: IRenderContext;
 }
 
 export interface ThemeProviderProps {
-    theme?: ITheme
-    className?: string
+    theme?: ITheme;
+    className?: string;
 }
 
 export type IVariantsMap = Record<string, IVariant>;
 
 export interface IDefaultVariant extends IVariantsMap {
-    default: IVariant
+    default: IVariant;
 }
 
 export interface IPropertyAdapter {
-    getNativePropertyGetter(name: string): string
-    getNativePropertySetter(name: string, value: string): string
-    getNativePropertyName(name: string): string
-    setPropertyValue(name: string, value: string): void
-    getPropertyValue(name: string): string
+    getNativePropertyGetter(name: string): string;
+
+    getNativePropertySetter(name: string, value: string): string;
+
+    getNativePropertyName(name: string): string;
+
+    setPropertyValue(name: string, value: string): void;
+
+    getPropertyValue(name: string): string;
 }
 
 export type IFlatStylesObject = Record<string, string>;
@@ -43,41 +47,56 @@ export type IRuleInterceptor = (parent: ICSSRulePath, preprocessed: boolean) => 
 export type IRuleInterceptorFactory = (c1: number, c2?: number) => IRuleInterceptor;
 
 export interface IBaseProperty<T extends IVariantsMap> {
-    name: string
-    variants: T
+    name: string;
+    variants: T;
 }
 
 export class Variant implements IVariant {
+    property?: IBaseProperty<any>;
+    value: string;
 
+    getKeyId(): string;
 }
 
-export class MediaVariant implements  IVariant {
+export class MediaVariant implements IVariant {
+    property?: IBaseProperty<any>;
+    mediaQuery: string;
+    value: string;
 
+    getKeyId(): string;
 }
 
-export class Property<T extends IDefaultVariant> implements IProperty<any>{
+export class Property<T extends IDefaultVariant> implements IProperty<any> {
+    name: string;
+    variants: T;
 
+    toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
+
+    toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
 }
 
 export type PropertyWatcher = (value: string) => void;
 
-export interface IVirtualProperty<T extends IVariantsMap> extends IBaseProperty<T> {}
+export interface IVirtualProperty<T extends IVariantsMap> extends IBaseProperty<T> {
+}
 
 export type IPropertiesFactory<T> = ((props: T | undefined) => CSSProperties);
 
 export interface ITheme {
-    name: string
-    variants: Map<string, IVariant>
+    name: string;
+    variants: Map<string, IVariant>;
 
-    createThemeInitialCss(): IStylesObject
-    getClassName(): string
+    createThemeInitialCss(): IStylesObject;
+
+    getClassName(): string;
 }
 
 export class Theme implements ITheme {
-    name: string
-    variants: Map<string, IVariant>
+    name: string;
+    variants: Map<string, IVariant>;
 
     createThemeInitialCss(): IStylesObject
+
     getClassName(): string
 }
 
@@ -138,10 +157,6 @@ export interface IProperty<T extends IVariantsMap> extends IBaseProperty<T> {
     toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
 
     toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
-}
-
-export interface IStylesObject<T = {}> {
-    [key: string]: CSSProperties | IPropertiesFactory<T> | IStylesObject<T> | string | number | IProperty<any>;
 }
 
 export function createUseStyles<S extends IStylesObject<P>,
