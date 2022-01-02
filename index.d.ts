@@ -47,15 +47,15 @@ export interface IBaseProperty<T extends IVariantsMap> {
     variants: T
 }
 
-export class Variant extends IVariant {
+export class Variant implements IVariant {
 
 }
 
-export class MediaVariant extends IVariant {
+export class MediaVariant implements  IVariant {
 
 }
 
-export class Property<T extends IDefaultVariant> extends IProperty<any>{
+export class Property<T extends IDefaultVariant> implements IProperty<any>{
 
 }
 
@@ -74,7 +74,11 @@ export interface ITheme {
 }
 
 export class Theme implements ITheme {
+    name: string
+    variants: Map<string, IVariant>
 
+    createThemeInitialCss(): IStylesObject
+    getClassName(): string
 }
 
 export interface IRenderContext {
@@ -143,8 +147,6 @@ export interface IStylesObject<T = {}> {
 export function createUseStyles<S extends IStylesObject<P>,
     P = any,
     Props = GetArgs<S[keyof S]>>(styles: S): (props: Props) => Record<keyof S, string>;
-
-export const GlossiaContextProvider: FC<ReactContextProviderProps>;
 
 export const ThemeProvider: FC<ThemeProviderProps>;
 
