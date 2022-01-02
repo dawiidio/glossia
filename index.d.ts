@@ -114,12 +114,12 @@ export interface IStaticStyles {
     readonly counterValue: number;
 }
 
-export interface GlossiaContextManager {
-    createContext(): IRenderContext;
+export class GlossiaContextManager {
+    static createContext(): IRenderContext;
 
-    destroyContext(context: IRenderContext);
+    static destroyContext(context: IRenderContext);
 
-    createStaticStyles<T>(styles: IStylesObject<T>): IStaticStyles;
+    static createStaticStyles<T>(styles: IStylesObject<T>): IStaticStyles;
 }
 
 export interface IVariant {
