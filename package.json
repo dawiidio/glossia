@@ -20,7 +20,8 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "browserslist": {
     "production": [
