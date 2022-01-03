@@ -1,22 +1,21 @@
 import { IProperty } from './IProperty';
-import { Styles } from '../src/Context/Styles';
-import { Stylesheet } from '../src/Styles/Stylesheet';
 import { IVirtualProperty } from './IVirtualProperty';
-import { InMemoryPropertyAdapter } from '../src/Theme/Property/InMemoryPropertyAdapter';
 import { IRenderer } from './IRenderer';
 import { IPropertyAdapter } from './IPropertyAdapter';
 import { ITheme } from './ITheme';
 import { IVariant } from './IVariant';
 import { ICounter } from './ICounter';
 import { IPropertyWatcher } from './IPropertyWatcher';
+import { IStyles } from './IStyles';
+import { IStylesheet } from './IStylesheet';
 
 export interface IRenderContext {
-    renderedStaticStyles: Set<Styles<any>>;
-    themeStylesheet?: Stylesheet<any>;
-    propertiesStylesheet?: Stylesheet<any>;
+    renderedStaticStyles: Set<IStyles<any>>;
+    themeStylesheet?: IStylesheet<any>;
+    propertiesStylesheet?: IStylesheet<any>;
     properties: Map<string, IProperty<any>>;
     virtualProperties: Map<string, IVirtualProperty<any>>;
-    virtualPropertyStorage: InMemoryPropertyAdapter;
+    virtualPropertyStorage: IPropertyAdapter;
     propertyWatchers: Map<IProperty<any> | IVirtualProperty<any>, Set<IPropertyWatcher>>;
     readonly id: number;
     readonly renderer: IRenderer;
@@ -26,7 +25,7 @@ export interface IRenderContext {
     themes: ITheme[];
     readonly ssr: boolean;
 
-    useStyles(styles: Styles<any>): void;
+    useStyles(styles: IStyles<any>): void;
 
     trigger(property: IProperty<any> | IVirtualProperty<any>, value: string): void;
 
