@@ -46,9 +46,12 @@ Glossia has a well-known api similar to the jss library:
 import { createUseStyles } from 'glossia';
 
 const useStyles = createUseStyles({
-    testDynamic: ({ val }: { val: number }) => ({
-        background: props.val % 2 ? 'red' : 'green',
-    }),
+    testGreen: {
+        backgroundColor: 'green',
+    },
+    testRed: {
+        backgroundColor: 'red',
+    },
     squareDiv: {
         backgroundColor: 'red',
         width: '100px',
@@ -59,9 +62,6 @@ const useStyles = createUseStyles({
     },
     myParagraph: {
         fontSize: '12px',
-        span: () => ({
-            background: 'blue',
-        }),
         '& > .special-text': {
             color: 'purple'
         }
@@ -81,14 +81,12 @@ const useStyles = createUseStyles({
 
 function App() {
     const [val, setVal] = useState<number>(0);
-    const classes = useStyles({
-        val
-    });
+    const classes = useStyles();
     const [arr, setArr] = useState<number[]>([0, 1, 2, 3, 4]);
 
     return (
         <div>
-            <div className={classes.testDynamic}>
+            <div className={val % 2 ? classes.testGreen : classes.testRed}>
                 Lorem ipsum dolor sit amet.
                 <button onClick={() => setVal(x => x + 1)}>change color</button>
             </div>
