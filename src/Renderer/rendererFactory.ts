@@ -1,4 +1,4 @@
-import { IRenderer, IRendererOptions } from './IRenderer';
+import { IRenderer, IRendererOptions } from '../../types/IRenderer';
 import { DomRenderer } from './DomRenderer';
 import { StringRenderer } from './StringRenderer';
 

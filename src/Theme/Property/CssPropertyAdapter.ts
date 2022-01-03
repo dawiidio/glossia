@@ -1,4 +1,4 @@
-import { IPropertyAdapter } from './IPropertyAdapter';
+import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 
 export class CssPropertyAdapter implements IPropertyAdapter {
     getNativePropertyGetter(name: string): string {

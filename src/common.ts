@@ -1,14 +1,13 @@
-import { IProperty } from './Theme/Property/IProperty';
+import { IProperty } from '../types/IProperty';
 import { Property } from './Theme/Property/Property';
-import { IVariant } from './Theme/Variant/IVariant';
-import { CSSProperties, useLayoutEffect } from 'react';
-import { IPropertiesFactory } from './Theme/Property/IPropertiesFactory';
-import { IFlatStylesObject } from './Styles/IFlatStylesObject';
-import { IStaticStyles } from './Styles/IStaticStyles';
-import { ITheme } from './Theme/ITheme';
-import { IStylesObject } from './Styles/IStylesObject';
+import { IVariant } from '../types/IVariant';
+import { useLayoutEffect } from 'react';
+import { IFlatStylesObject } from '../types/IFlatStylesObject';
+import { ITheme } from '../types/ITheme';
+import { IStylesObject } from '../types/IStylesObject';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
-import { IVirtualProperty } from './Theme/Property/IVirtualProperty';
+import { IVirtualProperty } from '../types/IVirtualProperty';
+import { IParsedStyles } from '../types/IParseStyles';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property;
@@ -25,16 +24,17 @@ export function extendVariantsMap(childVariants: Map<string, IVariant>, parentVa
     ]);
 }
 
-export const isNonBrowserEnv = (): boolean => !globalThis.navigator;
+export const isSSR = (): boolean => typeof window === 'undefined';
 
 export const isCSSRule = (rule: string = ''): boolean => rule.trimLeft().startsWith('@');
 export const isMediaRule = (rule: string): boolean => /(@media)/.test(rule);
+export const isGlobalRule = (rule: string): boolean => /(@global)/.test(rule);
 export const isKeyframesRule = (rule: string): boolean => /(@keyframes)/.test(rule);
 export const isRootPseudoRule = (rule: string): boolean => /(:root)/.test(rule);
 export const isClass = (rule: string): boolean => rule.startsWith('.');
 
-export function isPropertiesFactory<T>(propsOrFn: CSSProperties | IPropertiesFactory<T> | string): propsOrFn is IPropertiesFactory<T> {
-    return typeof propsOrFn === 'function';
+export function isRecord(predicate: string|Record<string, string>): predicate is Record<string, string> {
+    return typeof predicate === 'object';
 }
 
 export function includesParentReference(selector: string): boolean {
@@ -63,8 +63,11 @@ export function createRootClassName(key: string): string {
     return `${camelToKebabCase(key)}`;
 }
 
-export function stringifyStylesObject(obj: IFlatStylesObject): string {
-    return Object.entries(obj).reduce((acc, [property, val]) => `${acc}${property}:${val};`, '{') + '}';
+export function stringifyStylesObject(styles: IFlatStylesObject|string): string {
+    if (typeof styles === 'string')
+        return `{ ${styles}`;
+
+    return Object.entries(styles).reduce((acc, [property, val]) => `${acc}${property}:${val};`, '{') + '}';
 }
 
 export function parseMediaAcc(mediaAcc: Record<string, Record<string, string>>): Record<string, string> {
@@ -78,21 +81,21 @@ export function parseMediaAcc(mediaAcc: Record<string, Record<string, string>>):
     }, {});
 }
 
-export function fixMediaRules(fso: IStaticStyles): IFlatStylesObject {
+export function fixMediaRules(fso: IParsedStyles): IFlatStylesObject {
     let mediaAcc: Record<string, Record<string, string>> = {};
     let acc: Record<string, string> = {};
 
-    for (const [selector, stylesObject] of Object.entries(fso)) {
-        if (isCSSRule(selector)) {
+    for (const [selector, stylesObjectOrString] of Object.entries(fso)) {
+        if (isCSSRule(selector) && typeof stylesObjectOrString !== 'string') {
             const [media, nestedSelector] = selector.split('{');
 
             if (!mediaAcc[media])
                 mediaAcc[media] = {};
 
-            mediaAcc[media][nestedSelector] = stringifyStylesObject(stylesObject);
+            mediaAcc[media][nestedSelector] = stringifyStylesObject(stylesObjectOrString);
         }
 
-        acc[selector] = stringifyStylesObject(stylesObject);
+        acc[selector] = stringifyStylesObject(stylesObjectOrString);
     }
 
     return {
@@ -101,6 +104,6 @@ export function fixMediaRules(fso: IStaticStyles): IFlatStylesObject {
     }
 }
 
-export const useEffectOrCallImmediately = isNonBrowserEnv()
+export const useEffectOrCallImmediately = isSSR()
     ? ((cb: (() => any), arr: Array<any>) => cb())
     : useLayoutEffect;

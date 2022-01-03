@@ -1,6 +1,6 @@
 import { InMemoryPropertyAdapter } from './InMemoryPropertyAdapter';
 import { CssPropertyAdapter } from './CssPropertyAdapter';
-import { IPropertyAdapter } from './IPropertyAdapter';
+import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 
 
 export interface IPropertyAdapterOptions {

@@ -1,13 +1,13 @@
-import { isNonBrowserEnv } from '../common';
+import { isSSR } from '../common';
 import { rendererFactory } from '../Renderer/rendererFactory';
 import { counterFactory } from '../Counter/counterFactory';
 import { propertyAdapterFactory } from '../Theme/Property/propertyAdapterFactory';
-import { IStylesObject } from '../Styles/IStylesObject';
-import { IProperty } from '../Theme/Property/IProperty';
-import { IVirtualProperty } from '../Theme/Property/IVirtualProperty';
-import { ITheme } from '../Theme/ITheme';
+import { IStylesObject } from '../../types/IStylesObject';
+import { IProperty } from '../../types/IProperty';
+import { IVirtualProperty } from '../../types/IVirtualProperty';
+import { ITheme } from '../../types/ITheme';
 import { RenderContext } from './RenderContext';
-import { StaticStyles } from './StaticStyles';
+import { Styles } from './Styles';
 import { Counter } from '../Counter/Counter';
 
 const RENDERER_ID = 'client-styles';
@@ -26,7 +26,7 @@ export class GlossiaContextManager {
     private static staticStylesCounter = new Counter();
 
     static createContext({
-                             ssr = isNonBrowserEnv(),
+                             ssr = isSSR(),
                              properties = [],
                              themes = [],
                          }: ICreateContext = {}) {
@@ -75,7 +75,7 @@ export class GlossiaContextManager {
         return [...this.contexts.values()][index];
     }
 
-    static createStaticStyles<T>(styles: IStylesObject<T>): StaticStyles {
-        return new StaticStyles(styles, this.staticStylesCounter.increase());
+    static createStyles<S extends IStylesObject>(styles: S): Styles<S> {
+        return new Styles<S>(styles, this.staticStylesCounter.increase());
     }
 }

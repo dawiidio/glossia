@@ -1,10 +1,12 @@
-export class Counter {
-    private children: Counter[] = [];
-    private destroyed: boolean = false;
-    public parent?: Counter;
+import { ICounter } from '../../types/ICounter';
+
+export class Counter implements ICounter {
+    children: Counter[] = [];
+    destroyed: boolean = false;
+    parent?: Counter;
 
     constructor(
-        private value: number = 0
+        public value: number = 0,
     ) {}
 
     increase(): number {

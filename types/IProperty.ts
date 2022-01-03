@@ -1,6 +1,6 @@
-import { IVariantsMap } from '../Variant/IVariantsMap';
+import { IVariantsMap } from './IVariantsMap';
 import { IBaseProperty } from './IBaseProperty';
-import { IFlatStylesObject } from '../../Styles/IFlatStylesObject';
+import { IFlatStylesObject } from './IFlatStylesObject';
 import { IPropertyAdapter } from './IPropertyAdapter';
 
 export interface IProperty<T extends IVariantsMap> extends IBaseProperty<T> {

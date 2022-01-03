@@ -1,4 +1,4 @@
-import { ITheme } from '../Theme/ITheme';
+import { ITheme } from '../../types/ITheme';
 import React, { FC, useContext } from 'react';
 import { GlossiaReactContext } from './GlossiaContextProvider';
 

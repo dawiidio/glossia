@@ -1,5 +1,5 @@
-import { IVariant } from './Variant/IVariant';
-import { ITheme } from './ITheme';
+import { IVariant } from '../../types/IVariant';
+import { ITheme } from '../../types/ITheme';
 import { extendVariantsMap } from '../common';
 import { Theme } from './Theme';
 

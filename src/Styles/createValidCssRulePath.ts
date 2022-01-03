@@ -1,4 +1,4 @@
-import { ICSSRulePath } from './ICSSRulePath';
+import { ICSSRulePath } from '../../types/ICSSRulePath';
 import {
     camelToKebabCase,
     createRootClassName,

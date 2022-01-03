@@ -1,7 +1,7 @@
-import { IProperty } from './IProperty';
-import { IDefaultVariant } from '../Variant/IVariantsMap';
-import { IFlatStylesObject } from '../../Styles/IFlatStylesObject';
-import { IPropertyAdapter } from './IPropertyAdapter';
+import { IProperty } from '../../../types/IProperty';
+import { IDefaultVariant } from '../../../types/IVariantsMap';
+import { IFlatStylesObject } from '../../../types/IFlatStylesObject';
+import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 
 export class Property<T extends IDefaultVariant> implements IProperty<T> {
     constructor(

@@ -1,5 +1,5 @@
-import { IRenderer } from './IRenderer';
-import { IFlatStylesObject } from '../Styles/IFlatStylesObject';
+import { IRenderer } from '../../types/IRenderer';
+import { IFlatStylesObject } from '../../types/IFlatStylesObject';
 
 export abstract class Renderer implements IRenderer {
     protected allStyles = new Map<string, string>();

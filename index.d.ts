@@ -1,12 +1,17 @@
-import { CSSProperties, FC, Context } from 'react';
-import { RenderContext } from './src/Context/RenderContext';
+import { FC, Context } from 'react';
+import { ITheme } from './types/ITheme';
+import { IRenderContext } from './types/IRenderContext';
+import { IStylesObject } from './types/IStylesObject';
+import { ICreateContext } from './types/IGlossiaContextManager';
+import { IStyles } from './types/IStyles';
+import { IProperty } from './types/IProperty';
+import { IVariant } from './types/IVariant';
+import { IVirtualProperty } from './types/IVirtualProperty';
 
-export interface IStylesObject<T = {}> {
-    [key: string]: CSSProperties | IPropertiesFactory<T> | IStylesObject<T> | string | number | IProperty<any>;
-}
-
-export type FnType = (...args: any[]) => any;
-export type GetArgs<Fn> = Fn extends FnType ? Parameters<Fn>[0] : never;
+export { ITheme } from './types/ITheme';
+export { IProperty } from './types/IProperty';
+export { IVariant } from './types/IVariant';
+export { IVirtualProperty } from './types/IVirtualProperty';
 
 export const GlossiaReactContext: Context<IRenderContext>;
 
@@ -16,132 +21,9 @@ export interface IReactContextProviderProps {
     value: IRenderContext;
 }
 
-export interface ThemeProviderProps {
+export interface IThemeProviderProps {
     theme?: ITheme;
     className?: string;
-}
-
-export type IVariantsMap = Record<string, IVariant>;
-
-export interface IDefaultVariant extends IVariantsMap {
-    default: IVariant;
-}
-
-export interface IPropertyAdapter {
-    getNativePropertyGetter(name: string): string;
-
-    getNativePropertySetter(name: string, value: string): string;
-
-    getNativePropertyName(name: string): string;
-
-    setPropertyValue(name: string, value: string): void;
-
-    getPropertyValue(name: string): string;
-}
-
-export type IFlatStylesObject = Record<string, string>;
-
-export type ICSSRulePath = string[];
-
-export type IRuleInterceptor = (parent: ICSSRulePath, preprocessed: boolean) => ICSSRulePath;
-
-export type IRuleInterceptorFactory = (c1: number, c2?: number) => IRuleInterceptor;
-
-export interface IBaseProperty<T extends IVariantsMap> {
-    name: string;
-    variants: T;
-}
-
-export class Variant implements IVariant {
-    property?: IBaseProperty<any>;
-    value: string;
-
-    getKeyId(): string;
-}
-
-export class MediaVariant implements IVariant {
-    property?: IBaseProperty<any>;
-    mediaQuery: string;
-    value: string;
-
-    getKeyId(): string;
-}
-
-export class Property<T extends IDefaultVariant> implements IProperty<any> {
-    name: string;
-    variants: T;
-
-    toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
-
-    toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
-}
-
-export type PropertyWatcher = (value: string) => void;
-
-export interface IVirtualProperty<T extends IVariantsMap> extends IBaseProperty<T> {
-}
-
-export type IPropertiesFactory<T> = ((props: T | undefined) => CSSProperties);
-
-export interface ITheme {
-    name: string;
-    variants: Map<string, IVariant>;
-
-    createThemeInitialCss(): IStylesObject;
-
-    getClassName(): string;
-}
-
-export class Theme implements ITheme {
-    name: string;
-    variants: Map<string, IVariant>;
-
-    createThemeInitialCss(): IStylesObject
-
-    getClassName(): string
-}
-
-export interface IRenderContext {
-    useStaticStyles(staticStyles: IStaticStyles): void;
-
-    setPropertyValue(property: IProperty<any> | IVirtualProperty<any>, value: IVariant | string | number): void;
-
-    getPropertyValue(property: IProperty<any> | IVirtualProperty<any>): string;
-
-    watchProperty(property: IProperty<any> | IVirtualProperty<any>, callback: PropertyWatcher): (() => void);
-
-    renderThemingRelatedStylesheets(): void;
-
-    isThemeRendered(theme: ITheme): void;
-
-    toString(): string;
-
-    destroy(): void;
-}
-
-export interface IStylesheet<T> {
-    staticStyles: IStaticStyles;
-    dynamicStyles: IStylesObject<T>;
-    staticClassesMapping: Record<string, string>;
-    parsedStaticStyles: IFlatStylesObject;
-
-    parseDynamicStyles(props: T, ruleInterceptor?: IRuleInterceptor): { styles: IStaticStyles, classesMapping: Record<string, string>, parsedStyles: Record<string, string> };
-
-    mergeWithStaticClassesMapping(classesMapping: Record<string, string>): any;
-
-    destroy(): void;
-}
-
-export interface IStaticStyles {
-    stylesheet: IStylesheet<any>;
-    readonly styles: IStylesObject<any>;
-    readonly counterValue: number;
-}
-
-export interface ICreateContext {
-    ssr?: boolean;
-    properties?: Array<IProperty<any> | IVirtualProperty<any>>;
-    themes?: ITheme[];
 }
 
 export class GlossiaContextManager {
@@ -149,32 +31,16 @@ export class GlossiaContextManager {
 
     static destroyContext(context: IRenderContext);
 
-    static createStaticStyles<T>(styles: IStylesObject<T>): IStaticStyles;
+    static createStyles<S extends IStylesObject>(styles: S): IStyles<S>
 
-    static getContextByIndex(index: number): RenderContext | undefined
+    static getContextByIndex(index: number): IRenderContext | undefined
 
-    static getContextById(id: number): RenderContext | undefined
+    static getContextById(id: number): IRenderContext | undefined
 }
 
-export interface IVariant {
-    property?: IBaseProperty<any>;
-    mediaQuery?: string;
-    value: string;
+export function createUseStyles<S extends IStylesObject<S>>(styles: S): () => Record<keyof S, string>;
 
-    getKeyId(): string;
-}
-
-export interface IProperty<T extends IVariantsMap> extends IBaseProperty<T> {
-    toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
-
-    toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject;
-}
-
-export function createUseStyles<S extends IStylesObject<P>,
-    P = any,
-    Props = GetArgs<S[keyof S]>>(styles: S): (props: Props) => Record<keyof S, string>;
-
-export const ThemeProvider: FC<ThemeProviderProps>;
+export const ThemeProvider: FC<IThemeProviderProps>;
 
 export function useProperty<T extends IVariantsMap>(property: IProperty<T>): [string, ((newValue: string | number | IVariant) => void)]
 

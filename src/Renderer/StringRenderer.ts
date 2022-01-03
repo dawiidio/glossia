@@ -1,4 +1,4 @@
-import { DEFAULT_RENDERER_OPTIONS, IRendererOptions } from './IRenderer';
+import { DEFAULT_RENDERER_OPTIONS, IRendererOptions } from '../../types/IRenderer';
 import { Renderer } from './Renderer';
 
 export class StringRenderer extends Renderer {

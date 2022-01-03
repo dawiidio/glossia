@@ -1,5 +1,5 @@
-import { IVariant } from './IVariant';
-import { IProperty } from '../Property/IProperty';
+import { IVariant } from '../../../types/IVariant';
+import { IProperty } from '../../../types/IProperty';
 import { Variant } from './Variant';
 
 export function createVariant(value: string, cssVar?: IProperty<any>): IVariant {

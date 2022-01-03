@@ -1,4 +1,4 @@
-import { IPropertyAdapter } from './IPropertyAdapter';
+import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 
 export class InMemoryPropertyAdapter implements IPropertyAdapter {
     private propertiesStorage = new Map<string, string>();

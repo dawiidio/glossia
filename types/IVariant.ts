@@ -1,4 +1,4 @@
-import { IBaseProperty } from '../Property/IBaseProperty';
+import { IBaseProperty } from './IBaseProperty';
 
 export interface IVariant {
     property?: IBaseProperty<any>

@@ -1,5 +1,5 @@
-import { IVariant } from './IVariant';
-import { IProperty } from '../Property/IProperty';
+import { IVariant } from '../../../types/IVariant';
+import { IProperty } from '../../../types/IProperty';
 import { MediaVariant } from './MediaVariant';
 
 export function createMediaVariant(value: string, mediaQuery: string | IVariant, cssVar?: IProperty<any>): IVariant {

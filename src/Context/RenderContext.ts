@@ -1,35 +1,35 @@
 import { Stylesheet } from '../Styles/Stylesheet';
-import { IProperty } from '../Theme/Property/IProperty';
-import { IVirtualProperty } from '../Theme/Property/IVirtualProperty';
+import { IProperty } from '../../types/IProperty';
+import { IVirtualProperty } from '../../types/IVirtualProperty';
 import { InMemoryPropertyAdapter } from '../Theme/Property/InMemoryPropertyAdapter';
-import { IRenderer } from '../Renderer/IRenderer';
+import { IRenderer } from '../../types/IRenderer';
 import { Counter } from '../Counter/Counter';
-import { IPropertyAdapter } from '../Theme/Property/IPropertyAdapter';
-import { ITheme } from '../Theme/ITheme';
+import { IPropertyAdapter } from '../../types/IPropertyAdapter';
+import { ITheme } from '../../types/ITheme';
 import { isProperty, isVirtualProperty, mergeThemesStylesObjects } from '../common';
-import { IVariant } from '../Theme/Variant/IVariant';
+import { IVariant } from '../../types/IVariant';
 import { createInitialPropertiesCss } from '../Theme/Property/createInitialPropertiesCss';
-import { StaticStyles } from './StaticStyles';
+import { Styles } from './Styles';
+import { IRenderContext } from '../../types/IRenderContext';
+import { IPropertyWatcher } from '../../types/IPropertyWatcher';
 
-export type PropertyWatcher = (value: string) => void;
-
-export class RenderContext {
-    private readonly renderedStaticStyles = new Set<StaticStyles>();
-    private themeStylesheet?: Stylesheet<any>;
-    private propertiesStylesheet?: Stylesheet<any>;
-    private readonly properties = new Map<string, IProperty<any>>();
-    private readonly virtualProperties = new Map<string, IVirtualProperty<any>>();
-    private readonly virtualPropertyStorage = new InMemoryPropertyAdapter();
-    private readonly propertyWatchers = new Map<IProperty<any>|IVirtualProperty<any>, Set<PropertyWatcher>>();
+export class RenderContext implements IRenderContext {
+    readonly renderedStaticStyles = new Set<Styles<any>>();
+    themeStylesheet?: Stylesheet<any>;
+    propertiesStylesheet?: Stylesheet<any>;
+    readonly properties = new Map<string, IProperty<any>>();
+    readonly virtualProperties = new Map<string, IVirtualProperty<any>>();
+    readonly virtualPropertyStorage = new InMemoryPropertyAdapter();
+    readonly propertyWatchers = new Map<IProperty<any> | IVirtualProperty<any>, Set<IPropertyWatcher>>();
 
     constructor(
-        public readonly id: number,
-        public readonly renderer: IRenderer,
-        public readonly counter: Counter,
-        public readonly propertyAdapter: IPropertyAdapter,
+        readonly id: number,
+        readonly renderer: IRenderer,
+        readonly counter: Counter,
+        readonly propertyAdapter: IPropertyAdapter,
         public allProperties: Array<IProperty<any> | IVirtualProperty<any>>,
         public themes: ITheme[],
-        public readonly ssr: boolean
+        readonly ssr: boolean,
     ) {
         for (const property of this.allProperties) {
             if (isProperty(property)) {
@@ -49,26 +49,25 @@ export class RenderContext {
         this.renderThemingRelatedStylesheets();
     }
 
-    useStaticStyles(staticStyles: StaticStyles) {
-        if (this.renderedStaticStyles.has(staticStyles))
+    useStyles(styles: Styles<any>) {
+        if (this.renderedStaticStyles.has(styles))
             return;
 
-        this.renderedStaticStyles.add(staticStyles);
-        this.renderer.render(staticStyles.stylesheet.parsedStaticStyles);
+        this.renderedStaticStyles.add(styles);
+        this.renderer.render(styles.stylesheet.parsedStyles);
     }
 
-    private trigger(property: IProperty<any> | IVirtualProperty<any>, value: string) {
+    trigger(property: IProperty<any> | IVirtualProperty<any>, value: string) {
         [...(this.propertyWatchers.get(property)?.values() || [])].forEach(cb => cb(value));
     }
 
-    setPropertyValue(property: IProperty<any> | IVirtualProperty<any>, value: IVariant|string|number): void {
+    setPropertyValue(property: IProperty<any> | IVirtualProperty<any>, value: IVariant | string | number): void {
         if (isProperty(property)) {
             this.propertyAdapter.setPropertyValue(property.name, String(value));
 
             this.trigger(property, String(value));
             return;
-        }
-        else if (isVirtualProperty(property)) {
+        } else if (isVirtualProperty(property)) {
             this.virtualPropertyStorage.setPropertyValue(property.name, String(value));
 
             this.trigger(property, String(value));
@@ -81,32 +80,31 @@ export class RenderContext {
     getPropertyValue(property: IProperty<any> | IVirtualProperty<any>): string {
         if (isProperty(property)) {
             return this.propertyAdapter.getPropertyValue(property.name);
-        }
-        else if (isVirtualProperty(property)) {
+        } else if (isVirtualProperty(property)) {
             return this.virtualPropertyStorage.getPropertyValue(property.name);
         }
 
         throw new Error(`Unknown property type`);
     }
 
-    watchProperty(property: IProperty<any>|IVirtualProperty<any>, callback: PropertyWatcher): (() => void) {
+    watchProperty(property: IProperty<any> | IVirtualProperty<any>, callback: IPropertyWatcher): (() => void) {
         if (!this.propertyWatchers.has(property)) {
-            this.propertyWatchers.set(property, new Set<PropertyWatcher>());
+            this.propertyWatchers.set(property, new Set<IPropertyWatcher>());
         }
 
         this.propertyWatchers.get(property)?.add(callback);
 
         return () => {
             this.propertyWatchers.get(property)?.delete(callback);
-        }
+        };
     }
 
     renderThemingRelatedStylesheets() {
         this.propertiesStylesheet = new Stylesheet<any>(createInitialPropertiesCss([...this.properties.values()], this.propertyAdapter));
         this.themeStylesheet = new Stylesheet<any>(mergeThemesStylesObjects(this.themes));
         this.renderer.render({
-            ...this.propertiesStylesheet.parsedStaticStyles,
-            ...this.themeStylesheet.parsedStaticStyles,
+            ...this.propertiesStylesheet.parsedStyles,
+            ...this.themeStylesheet.parsedStyles,
         });
     }
 

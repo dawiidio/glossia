@@ -1,18 +1,20 @@
-import { ITheme } from './ITheme';
-import { IVariant } from './Variant/IVariant';
-import { IStylesObject } from '../Styles/IStylesObject';
-import { IFlatStylesObject } from '../Styles/IFlatStylesObject';
-import { IStaticStyles } from '../Styles/IStaticStyles';
+import { ITheme } from '../../types/ITheme';
+import { IVariant } from '../../types/IVariant';
+import { IStylesObject } from '../../types/IStylesObject';
+import { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import { isRecord } from '../common';
+import { IParsedStyles } from '../../types/IParseStyles';
 
 export class Theme implements ITheme {
     constructor(
         public name: string,
-        public variants: Map<string, IVariant>
-    ) {}
+        public variants: Map<string, IVariant>,
+    ) {
+    }
 
     createThemeInitialCss(): IStylesObject {
         const variables: IFlatStylesObject = {};
-        const mediaRules: IStaticStyles = {};
+        const mediaRules: IParsedStyles = {};
 
         for (const [propertyName, variant] of this.variants.entries()) {
             if (!variant.property)
@@ -28,7 +30,10 @@ export class Theme implements ITheme {
                 if (!mediaRules[key])
                     mediaRules[key] = {};
 
-                mediaRules[key][`--${variant.property.name}`] = variant.value;
+                const temp = mediaRules[key];
+
+                if (isRecord(temp))
+                    temp[`--${variant.property.name}`] = variant.value;
             }
         }
 

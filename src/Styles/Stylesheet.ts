@@ -1,59 +1,31 @@
-import { IStaticStyles } from './IParseStyles';
-import { IStylesObject } from './IStylesObject';
-import { IFlatStylesObject } from './IFlatStylesObject';
-import { IRuleInterceptor } from './IRuleInterceptor';
+import { IParsedStyles } from '../../types/IParseStyles';
+import { IStylesObject } from '../../types/IStylesObject';
+import { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import { IRuleInterceptor } from '../../types/IRuleInterceptor';
 import { parseStylesObject } from './parseStylesObject';
 import { fixMediaRules } from '../common';
+import { IStylesheet } from '../../types/IStylesheet';
 
-export class Stylesheet<T> {
-    staticStyles: IStaticStyles = {};
-    dynamicStyles: IStylesObject<T>;
-    staticClassesMapping: Record<string, string> = {};
-    parsedStaticStyles: IFlatStylesObject = {};
+export class Stylesheet<S extends IStylesObject> implements IStylesheet<S> {
+    styles: IParsedStyles = {};
+    stylesClassesMapping: Record<keyof S, string>;
+    parsedStyles: IFlatStylesObject = {};
 
-    constructor(styles: IStylesObject<T>, ruleInterceptor?: IRuleInterceptor) {
+    constructor(stylesObject: S, ruleInterceptor?: IRuleInterceptor) {
         const {
-            staticStyles, dynamicStyles, staticClassesMapping,
-        } = parseStylesObject({
-            styles,
+            styles, stylesClassesMapping,
+        } = parseStylesObject<S>({
+            styles: stylesObject,
             ruleInterceptor,
         });
 
-        this.dynamicStyles = dynamicStyles;
-        this.staticStyles = staticStyles;
-        this.staticClassesMapping = staticClassesMapping;
-        this.parsedStaticStyles = fixMediaRules(this.staticStyles);
-    }
-
-    parseDynamicStyles(props: T, ruleInterceptor?: IRuleInterceptor): { styles: IStaticStyles, classesMapping: Record<string, string>, parsedStyles: Record<string, string> } {
-        if (!this.dynamicStyles)
-            throw new Error(`Styles not parsed yet`);
-
-        const { staticStyles, staticClassesMapping } = parseStylesObject({
-            styles: this.dynamicStyles,
-            ruleInterceptor,
-            preprocessed: true,
-            props,
-        });
-
-        return {
-            styles: staticStyles,
-            classesMapping: staticClassesMapping,
-            parsedStyles: fixMediaRules(staticStyles),
-        };
-    }
-
-    mergeWithStaticClassesMapping(classesMapping: Record<string, string>) {
-        return {
-            ...this.staticClassesMapping,
-            ...classesMapping,
-        };
+        this.styles = styles;
+        this.stylesClassesMapping = stylesClassesMapping;
+        this.parsedStyles = fixMediaRules(this.styles);
     }
 
     destroy() {
-        this.dynamicStyles = {};
-        this.staticStyles = {};
-        this.parsedStaticStyles = {};
-        this.staticClassesMapping = {};
+        this.styles = {};
+        this.parsedStyles = {};
     }
 }

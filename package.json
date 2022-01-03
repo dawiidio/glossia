@@ -21,6 +21,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "watch": "tsc -w",
     "prepublishOnly": "npm run build"
   },
   "browserslist": {
@@ -37,6 +38,7 @@
   },
   "files": [
     "dist/",
+    "types/",
     "package.json",
     "index.d.ts"
   ],

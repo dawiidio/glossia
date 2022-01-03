@@ -1,4 +1,4 @@
-import { IVariantsMap } from '../Variant/IVariantsMap';
+import { IVariantsMap } from './IVariantsMap';
 
 export interface IBaseProperty<T extends IVariantsMap> {
     name: string

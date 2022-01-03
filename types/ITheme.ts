@@ -1,5 +1,5 @@
-import { IVariant } from './Variant/IVariant';
-import { IStylesObject } from '../Styles/IStylesObject';
+import { IVariant } from './IVariant';
+import { IStylesObject } from './IStylesObject';
 
 export interface ITheme {
     name: string

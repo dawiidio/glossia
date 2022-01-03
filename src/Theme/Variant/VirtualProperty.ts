@@ -1,5 +1,5 @@
-import { IVariantsMap } from './IVariantsMap';
-import { IVirtualProperty } from '../Property/IVirtualProperty';
+import { IVariantsMap } from '../../../types/IVariantsMap';
+import { IVirtualProperty } from '../../../types/IVirtualProperty';
 
 export class VirtualProperty<T extends IVariantsMap = IVariantsMap> implements IVirtualProperty<T> {
     constructor(

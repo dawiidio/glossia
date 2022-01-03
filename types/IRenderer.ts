@@ -1,4 +1,4 @@
-import { IFlatStylesObject } from '../Styles/IFlatStylesObject';
+import { IFlatStylesObject } from './IFlatStylesObject';
 
 export interface IRendererOptions {
     elementId: string
