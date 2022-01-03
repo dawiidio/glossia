@@ -1,7 +1,7 @@
 {
   "name": "glossia",
   "description": "JSS like styling library which comes with atomic theming system based on native CSS",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "private": false,
   "author": {
     "name": "Dawid Wojda",
