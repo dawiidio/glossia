@@ -1,14 +1,14 @@
-import { IProperty } from '../types/IProperty';
+import type { IStylesObject } from '../types/IStylesObject';
+import type { IProperty } from '../types/IProperty';
+import type { IVirtualProperty } from '../types/IVirtualProperty';
+import type { IParsedStyles } from '../types/IParseStyles';
+import type { IClasses, IClassName } from '../types/IClassNames';
+import type { IVariant } from '../types/IVariant';
+import type { IFlatStylesObject } from '../types/IFlatStylesObject';
+import type { ITheme } from '../types/ITheme';
 import { Property } from './Theme/Property/Property';
-import { IVariant } from '../types/IVariant';
 import { useLayoutEffect } from 'react';
-import { IFlatStylesObject } from '../types/IFlatStylesObject';
-import { ITheme } from '../types/ITheme';
-import { IStylesObject } from '../types/IStylesObject';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
-import { IVirtualProperty } from '../types/IVirtualProperty';
-import { IParsedStyles } from '../types/IParseStyles';
-import { IClasses, IClassName } from '../types/IClassNames';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property;

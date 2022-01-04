@@ -1,9 +1,9 @@
-import { ITheme } from '../../types/ITheme';
-import { IVariant } from '../../types/IVariant';
-import { IStylesObject } from '../../types/IStylesObject';
-import { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import type { ITheme } from '../../types/ITheme';
+import type { IVariant } from '../../types/IVariant';
+import type { IStylesObject } from '../../types/IStylesObject';
+import type { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import type { IParsedStyles } from '../../types/IParseStyles';
 import { isRecord } from '../common';
-import { IParsedStyles } from '../../types/IParseStyles';
 
 export class Theme implements ITheme {
     constructor(

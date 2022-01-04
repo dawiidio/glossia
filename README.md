@@ -45,7 +45,7 @@ Glossia has a well-known api similar to the jss library:
 ```tsx
 import { createUseStyles } from 'glossia';
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles('namespace', {
     testGreen: {
         backgroundColor: 'green',
     },
@@ -195,7 +195,7 @@ const bg = createProperty('bg-color', {
     secondary: createVariant('green'),
 });
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles('namespace', {
     test: {
         backgroundColor: bg,
     }
@@ -310,7 +310,7 @@ const redTheme = createTheme('red', [
     createVariant('red', bg)
 ]);
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles('namespace', {
     test: {
         backgroundColor: bg,
     }
@@ -408,7 +408,7 @@ const redTheme = createTheme('red', [
     createVariant('red', bg)
 ]);
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles('namespace', {
     test: {
         backgroundColor: bg,
     }
@@ -511,11 +511,6 @@ app.get('/', async (req, res) => {
     GlossiaContextManager.destroyContext(glossiaContext);
 });
 ```
-
-## Known issues
-
-I know I messed up some types, for example `createUseStyles` has a bug and props are extracted not exactly like they
-should be. Correct solution involves nested iterations in TS but yet I had not enough time to solve problem.
 
 ## FAQ
 

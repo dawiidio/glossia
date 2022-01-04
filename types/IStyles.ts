@@ -4,5 +4,5 @@ import { IStylesheet } from './IStylesheet';
 export interface IStyles<S extends IStylesObject> {
     stylesheet: IStylesheet<S>;
     readonly styles: S;
-    readonly counterValue: number;
+    readonly id: number|string;
 }

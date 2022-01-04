@@ -1,4 +1,4 @@
-import { IRendererOptions } from '../../types/IRenderer';
+import type { IRendererOptions } from '../../types/IRenderer';
 import { Renderer } from './Renderer';
 import { DEFAULT_RENDERER_OPTIONS } from './defaultRendererOptions';
 

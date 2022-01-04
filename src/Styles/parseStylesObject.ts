@@ -1,7 +1,7 @@
-import { IParseStylesReturnData, IParseStylesArgs } from '../../types/IParseStyles';
+import type { IParseStylesReturnData, IParseStylesArgs } from '../../types/IParseStyles';
+import type { IStylesObject } from '../../types/IStylesObject';
 import { camelToKebabCase, isClass, isProperty, isRecord, replaceParentReference } from '../common';
 import { createValidCssRulePath } from './createValidCssRulePath';
-import { IStylesObject } from '../../types/IStylesObject';
 
 export function parseStylesObject<S extends IStylesObject>({
                                                                parentSelectorPath = [''],

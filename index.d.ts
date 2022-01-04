@@ -1,20 +1,20 @@
-import { FC, Context } from 'react';
-import { ITheme } from './types/ITheme';
-import { IRenderContext } from './types/IRenderContext';
-import { IStylesObject } from './types/IStylesObject';
-import { ICreateContext } from './types/IGlossiaContextManager';
-import { IStyles } from './types/IStyles';
-import { IProperty } from './types/IProperty';
-import { IVariant } from './types/IVariant';
-import { IVirtualProperty } from './types/IVirtualProperty';
-import { IDefaultVariant, IVariantsMap } from './types/IVariantsMap';
-import { IClasses, IClassName } from './types/IClassNames';
+import type { FC, Context } from 'react';
+import type { ITheme } from './types/ITheme';
+import type { IRenderContext } from './types/IRenderContext';
+import type { IStylesObject } from './types/IStylesObject';
+import type { ICreateContext } from './types/IGlossiaContextManager';
+import type { IStyles } from './types/IStyles';
+import type { IProperty } from './types/IProperty';
+import type { IVariant } from './types/IVariant';
+import type { IVirtualProperty } from './types/IVirtualProperty';
+import type { IDefaultVariant, IVariantsMap } from './types/IVariantsMap';
+import type { IClasses, IClassName } from './types/IClassNames';
 
-export { IClasses, IClassName } from './types/IClassNames';
-export { ITheme } from './types/ITheme';
-export { IProperty } from './types/IProperty';
-export { IVariant } from './types/IVariant';
-export { IVirtualProperty } from './types/IVirtualProperty';
+export type { IClasses, IClassName } from './types/IClassNames';
+export type { ITheme } from './types/ITheme';
+export type { IProperty } from './types/IProperty';
+export type { IVariant } from './types/IVariant';
+export type { IVirtualProperty } from './types/IVirtualProperty';
 
 export const GlossiaReactContext: Context<IRenderContext>;
 
@@ -41,7 +41,7 @@ export class GlossiaContextManager {
     static getContextById(id: number): IRenderContext | undefined
 }
 
-export function createUseStyles<S extends IStylesObject>(styles: S): () => IClasses<S>;
+export function createUseStyles<S extends IStylesObject>(namespace: string, styles: S): () => IClasses<S>;
 
 export const ThemeProvider: FC<IThemeProviderProps>;
 

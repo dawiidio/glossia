@@ -1,4 +1,4 @@
-import { ICSSRulePath } from '../../types/ICSSRulePath';
+import type { ICSSRulePath } from '../../types/ICSSRulePath';
 import {
     camelToKebabCase,
     createRootClassName,
@@ -31,7 +31,7 @@ export function createValidCssRulePath(ruleOrSelector: string, parent: ICSSRuleP
             if (includesParentReference(ruleOrSelector)) {
                 return [
                     ...parent.slice(0, -1),
-                    camelToKebabCase(replaceParentReference(ruleOrSelector, parent.slice(-1)[0])),
+                    replaceParentReference(ruleOrSelector, parent.slice(-1)[0]),
                 ];
             }
 

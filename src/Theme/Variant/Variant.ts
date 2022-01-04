@@ -1,5 +1,5 @@
-import { IVariant } from '../../../types/IVariant';
-import { IBaseProperty } from '../../../types/IBaseProperty';
+import type { IVariant } from '../../../types/IVariant';
+import type { IBaseProperty } from '../../../types/IBaseProperty';
 
 export class Variant implements IVariant {
     constructor(

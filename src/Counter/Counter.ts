@@ -1,4 +1,4 @@
-import { ICounter } from '../../types/ICounter';
+import type { ICounter } from '../../types/ICounter';
 
 export class Counter implements ICounter {
     children: Counter[] = [];

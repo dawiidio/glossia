@@ -1,10 +1,10 @@
-import { IParsedStyles } from '../../types/IParseStyles';
-import { IStylesObject } from '../../types/IStylesObject';
-import { IFlatStylesObject } from '../../types/IFlatStylesObject';
-import { IRuleInterceptor } from '../../types/IRuleInterceptor';
+import type { IParsedStyles } from '../../types/IParseStyles';
+import type { IStylesObject } from '../../types/IStylesObject';
+import type { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import type { IRuleInterceptor } from '../../types/IRuleInterceptor';
+import type { IStylesheet } from '../../types/IStylesheet';
 import { parseStylesObject } from './parseStylesObject';
 import { fixMediaRules } from '../common';
-import { IStylesheet } from '../../types/IStylesheet';
 
 export class Stylesheet<S extends IStylesObject> implements IStylesheet<S> {
     styles: IParsedStyles = {};

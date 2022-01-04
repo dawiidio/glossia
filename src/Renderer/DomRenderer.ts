@@ -1,6 +1,6 @@
-import { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import type { IFlatStylesObject } from '../../types/IFlatStylesObject';
+import type { IRendererOptions } from '../../types/IRenderer';
 import { Renderer } from './Renderer';
-import { IRendererOptions } from '../../types/IRenderer';
 import { DEFAULT_RENDERER_OPTIONS } from './defaultRendererOptions';
 
 export class DomRenderer extends Renderer {

@@ -1,7 +1,7 @@
-import { IProperty } from '../../../types/IProperty';
-import { IFlatStylesObject } from '../../../types/IFlatStylesObject';
-import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
-import { IParsedStyles } from '../../../types/IParseStyles';
+import type { IProperty } from '../../../types/IProperty';
+import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
+import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
+import type { IParsedStyles } from '../../../types/IParseStyles';
 
 export function createInitialPropertiesCss(properties: IProperty<any>[], propertyAdapter: IPropertyAdapter): IParsedStyles {
     let variables: IFlatStylesObject = {};

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { GlossiaReactContext } from './GlossiaContextProvider';
-import { IProperty } from '../../types/IProperty';
-import { IVariant } from '../../types/IVariant';
-import { IVariantsMap } from '../../types/IVariantsMap';
+import type { IProperty } from '../../types/IProperty';
+import type { IVariant } from '../../types/IVariant';
+import type { IVariantsMap } from '../../types/IVariantsMap';
 
 export function useProperty<T extends IVariantsMap>(property: IProperty<T>): [string, ((newValue: string|number|IVariant) => void)] {
     const ctx = useContext(GlossiaReactContext);

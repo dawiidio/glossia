@@ -1,14 +1,14 @@
+import type { IStylesObject } from '../../types/IStylesObject';
+import type { IProperty } from '../../types/IProperty';
+import type { IVirtualProperty } from '../../types/IVirtualProperty';
+import type { ITheme } from '../../types/ITheme';
+import type { IStyles } from '../../types/IStyles';
 import { isSSR } from '../common';
 import { rendererFactory } from '../Renderer/rendererFactory';
 import { counterFactory } from '../Counter/counterFactory';
 import { propertyAdapterFactory } from '../Theme/Property/propertyAdapterFactory';
-import { IStylesObject } from '../../types/IStylesObject';
-import { IProperty } from '../../types/IProperty';
-import { IVirtualProperty } from '../../types/IVirtualProperty';
-import { ITheme } from '../../types/ITheme';
 import { RenderContext } from './RenderContext';
 import { Styles } from './Styles';
-import { Counter } from '../Counter/Counter';
 
 const RENDERER_ID = 'client-styles';
 const SSR_RENDERER_ID = 'ssr-styles';
@@ -23,7 +23,7 @@ export interface ICreateContext {
 
 export class GlossiaContextManager {
     private static contexts = new Map<number, RenderContext>();
-    private static staticStylesCounter = new Counter();
+    private static stylesNamespaces = new Map<string, IStyles<any>>();
 
     static createContext({
                              ssr = isSSR(),
@@ -75,7 +75,14 @@ export class GlossiaContextManager {
         return [...this.contexts.values()][index];
     }
 
-    static createStyles<S extends IStylesObject>(styles: S): Styles<S> {
-        return new Styles<S>(styles, this.staticStylesCounter.increase());
+    static createStyles<S extends IStylesObject>(namespace: string, styles: S): Styles<S> {
+        if (this.stylesNamespaces.has(namespace))
+            return this.stylesNamespaces.get(namespace) as Styles<S>;
+
+        const stylesCls = new Styles<S>(styles, namespace);
+
+        this.stylesNamespaces.set(namespace, stylesCls);
+
+        return stylesCls;
     }
 }

@@ -1,5 +1,5 @@
 import { Variant } from './Variant';
-import { IBaseProperty } from '../../../types/IBaseProperty';
+import type { IBaseProperty } from '../../../types/IBaseProperty';
 
 export class MediaVariant extends Variant {
     constructor(

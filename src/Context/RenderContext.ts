@@ -1,17 +1,17 @@
 import { Stylesheet } from '../Styles/Stylesheet';
-import { IProperty } from '../../types/IProperty';
-import { IVirtualProperty } from '../../types/IVirtualProperty';
+import type { IProperty } from '../../types/IProperty';
+import type { IVirtualProperty } from '../../types/IVirtualProperty';
 import { InMemoryPropertyAdapter } from '../Theme/Property/InMemoryPropertyAdapter';
-import { IRenderer } from '../../types/IRenderer';
+import type { IRenderer } from '../../types/IRenderer';
 import { Counter } from '../Counter/Counter';
-import { IPropertyAdapter } from '../../types/IPropertyAdapter';
-import { ITheme } from '../../types/ITheme';
+import type { IPropertyAdapter } from '../../types/IPropertyAdapter';
+import type { ITheme } from '../../types/ITheme';
 import { isProperty, isVirtualProperty, mergeThemesStylesObjects } from '../common';
-import { IVariant } from '../../types/IVariant';
+import type { IVariant } from '../../types/IVariant';
 import { createInitialPropertiesCss } from '../Theme/Property/createInitialPropertiesCss';
 import { Styles } from './Styles';
-import { IRenderContext } from '../../types/IRenderContext';
-import { IPropertyWatcher } from '../../types/IPropertyWatcher';
+import type { IRenderContext } from '../../types/IRenderContext';
+import type { IPropertyWatcher } from '../../types/IPropertyWatcher';
 
 export class RenderContext implements IRenderContext {
     readonly renderedStaticStyles = new Set<Styles<any>>();
