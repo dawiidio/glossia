@@ -8,6 +8,7 @@ import { IStylesObject } from '../types/IStylesObject';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
 import { IVirtualProperty } from '../types/IVirtualProperty';
 import { IParsedStyles } from '../types/IParseStyles';
+import { IClasses, IClassName } from '../types/IClassNames';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property;
@@ -107,3 +108,28 @@ export function fixMediaRules(fso: IParsedStyles): IFlatStylesObject {
 export const useEffectOrCallImmediately = isSSR()
     ? ((cb: (() => any), arr: Array<any>) => cb())
     : useLayoutEffect;
+
+export function joinClassNames(...classes: Array<string|IClassName>): string {
+    return classes.join(' ');
+}
+
+export function createClassName(className: string): IClassName {
+    const f = function ClassName(renderClass: boolean) {
+        return renderClass ? className : '';
+    }
+
+    f.toString = () => className;
+
+    return f;
+}
+
+export function createClasses<S>(classMapping: Record<keyof S, string>): IClasses<S> {
+    // @ts-ignore
+    return Object.entries(classMapping).reduce((acc, [key, className]) => ({
+        ...acc,
+        // @ts-ignore
+        [key]: createClassName(className),
+    }), {
+        join: joinClassNames
+    });
+}

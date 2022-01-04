@@ -2,10 +2,12 @@ import { IStylesObject } from '../../types/IStylesObject';
 import { GlossiaContextManager } from '../Context/GlossiaContextManager';
 import { GlossiaReactContext } from './GlossiaContextProvider';
 import { useContext } from 'react';
-import { useEffectOrCallImmediately } from '../common';
+import { useEffectOrCallImmediately, createClasses } from '../common';
+import { IClasses } from '../../types/IClassNames';
 
-export function createUseStyles<S extends IStylesObject>(stylesObject: S): () => Record<keyof S, string> {
+export function createUseStyles<S extends IStylesObject>(stylesObject: S): () => IClasses<S> {
     const styles = GlossiaContextManager.createStyles<S>(stylesObject);
+    const classes = createClasses<S>(styles.stylesheet.stylesClassesMapping);
 
     return function () {
         const context = useContext(GlossiaReactContext);
@@ -14,6 +16,6 @@ export function createUseStyles<S extends IStylesObject>(stylesObject: S): () =>
             context.useStyles(styles);
         }, [context]);
 
-        return styles.stylesheet.stylesClassesMapping;
+        return classes;
     };
 }

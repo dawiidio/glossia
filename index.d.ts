@@ -7,7 +7,10 @@ import { IStyles } from './types/IStyles';
 import { IProperty } from './types/IProperty';
 import { IVariant } from './types/IVariant';
 import { IVirtualProperty } from './types/IVirtualProperty';
+import { IDefaultVariant, IVariantsMap } from './types/IVariantsMap';
+import { IClasses, IClassName } from './types/IClassNames';
 
+export { IClasses, IClassName } from './types/IClassNames';
 export { ITheme } from './types/ITheme';
 export { IProperty } from './types/IProperty';
 export { IVariant } from './types/IVariant';
@@ -29,7 +32,7 @@ export interface IThemeProviderProps {
 export class GlossiaContextManager {
     static createContext(options?: ICreateContext): IRenderContext;
 
-    static destroyContext(context: IRenderContext);
+    static destroyContext(context: IRenderContext): void;
 
     static createStyles<S extends IStylesObject>(styles: S): IStyles<S>
 
@@ -38,7 +41,7 @@ export class GlossiaContextManager {
     static getContextById(id: number): IRenderContext | undefined
 }
 
-export function createUseStyles<S extends IStylesObject<S>>(styles: S): () => Record<keyof S, string>;
+export function createUseStyles<S extends IStylesObject>(styles: S): () => IClasses<S>;
 
 export const ThemeProvider: FC<IThemeProviderProps>;
 

@@ -52,6 +52,9 @@ const useStyles = createUseStyles({
     testRed: {
         backgroundColor: 'red',
     },
+    activeSquare: {
+        backgroundColor: 'blue',
+    },
     squareDiv: {
         backgroundColor: 'red',
         width: '100px',
@@ -81,24 +84,37 @@ const useStyles = createUseStyles({
 
 function App() {
     const [val, setVal] = useState<number>(0);
-    const classes = useStyles();
+    const { 
+        join,
+        activeSquare,
+        testRed,
+        testGreen,
+        squareDiv,
+        myParagraph,
+        testAnimation
+    } = useStyles();
     const [arr, setArr] = useState<number[]>([0, 1, 2, 3, 4]);
+    
+    const isActive = (id: number): boolean => {
+        //... some logic
+        return true;
+    };
 
     return (
         <div>
-            <div className={val % 2 ? classes.testGreen : classes.testRed}>
+            <div className={join(val % 2 ? testGreen : testRed)}>
                 Lorem ipsum dolor sit amet.
                 <button onClick={() => setVal(x => x + 1)}>change color</button>
             </div>
-            {arr.map(num => (<div key={num} className={classes.squareDiv}>
+            {arr.map(num => (<div key={num} className={join(squareDiv, activeSquare(isActive(num)))}>
                 Number: {num}
             </div>))}
-            <p className={classes.myParagraph}>
+            <p className={join(myParagraph)}>
                 Lorem ipsum dolor sit amet.
                 <span>Lorem ipsum dolor sit.</span>
                 <span className="special-text">Lorem ipsum dolor sit amet.</span>
             </p>
-            <h1 className={classes.testAnimation}>
+            <h1 className={join(testAnimation)}>
                 Lorem ipsum dolor sit amet.
             </h1>
         </div>
@@ -301,23 +317,27 @@ const useStyles = createUseStyles({
 });
 
 function App() {
-    const classes = useStyles();
+    const {
+        join,
+        test,
+        
+    } = useStyles();
 
     return (
         <div>
-            <div className={classes.test}>
+            <div className={join(test)}>
                 I'm basic, default white
             </div>
             <ThemeProvider theme={greenTheme}>
-                <div className={classes.test}>
+                <div className={join(test)}>
                     I'm green
                 </div>
             </ThemeProvider>
             <ThemeProvider theme={redTheme}>
-                <div className={classes.test}>
+                <div className={join(test)}>
                     I'm red
                     <ThemeProvider theme={greenTheme}>
-                        <div className={classes.test}>
+                        <div className={join(test)}>
                             And I get colors from closest theme, thats why I'm green!
                         </div>
                     </ThemeProvider>
@@ -351,14 +371,17 @@ Theme may be easily switched like this:
 
 ```tsx
 function App() {
-    const classes = useStyles();
+    const {
+        join,
+        test
+    } = useStyles();
     const [theme, setTheme] = useState<ITheme>();
 
     return (
         <div>
             <button onClick={() => setTheme(greenTheme)}></button>
             <ThemeProvider theme={theme}>
-                <div className={classes.test}>
+                <div className={join(test)}>
                     My color is based on passed theme!
                 </div>
             </ThemeProvider>
