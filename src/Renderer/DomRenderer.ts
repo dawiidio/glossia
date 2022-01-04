@@ -1,6 +1,7 @@
 import { IFlatStylesObject } from '../../types/IFlatStylesObject';
 import { Renderer } from './Renderer';
-import { DEFAULT_RENDERER_OPTIONS, IRendererOptions } from '../../types/IRenderer';
+import { IRendererOptions } from '../../types/IRenderer';
+import { DEFAULT_RENDERER_OPTIONS } from './defaultRendererOptions';
 
 export class DomRenderer extends Renderer {
     static createStyleElement(): HTMLStyleElement {

@@ -1,5 +1,6 @@
-import { DEFAULT_RENDERER_OPTIONS, IRendererOptions } from '../../types/IRenderer';
+import { IRendererOptions } from '../../types/IRenderer';
 import { Renderer } from './Renderer';
+import { DEFAULT_RENDERER_OPTIONS } from './defaultRendererOptions';
 
 export class StringRenderer extends Renderer {
     private readonly options: IRendererOptions;
