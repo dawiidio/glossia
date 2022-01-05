@@ -15,6 +15,7 @@ export type { ITheme } from './types/ITheme';
 export type { IProperty } from './types/IProperty';
 export type { IVariant } from './types/IVariant';
 export type { IVirtualProperty } from './types/IVirtualProperty';
+export type { IRenderContext } from './types/IRenderContext';
 
 export const GlossiaReactContext: Context<IRenderContext>;
 
