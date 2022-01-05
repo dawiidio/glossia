@@ -16,7 +16,7 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
 
     toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject {
         return {
-            [propertyAdapter.getNativePropertyName(this.name)]: this.variants.default.value,
+            [propertyAdapter.getNativePropertyName(this.name)]: propertyAdapter.getNativePropertyGetter(`${this.name}-default`),
         };
     }
 
