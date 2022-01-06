@@ -4,11 +4,13 @@ Glossia is a shortcut for latin "*Glossostigma elatinoides*"
 which is a small underwater plant, as its role model plant Glossia is a small solution for styling React components and
 theming web applications, with built-in support for SSR and hydration modes whereby it remains almost 0 dependency lib.
 
-Glossia in hydration mode and rendered in SSR mode styles is zero-runtime styling solution.
+Glossia in configuration like this: hydration mode on client side and rendered in SSR mode is zero-runtime styling
+solution on client side. There are also plans for Glossia build step which will make it zero client runtime without SSR,
+it will even remove redundant at this point declarations to minimize bundle size.
 
-I build it for blog because I wanted something more integrated with native CSS. All Glossia
-theming system is based on pure CSS properties and classes which is real superpower. Apart from the above Glossia has no
-explicit dependencies expect React and Typescript what makes it small and safe for use.
+I build it for blog because I wanted something more integrated with native CSS. All Glossia theming system is based on
+pure CSS properties and classes which is its real superpower. Apart from the above Glossia has no explicit dependencies
+expect React and Typescript what makes it small and safe for use.
 
 ## Installation
 
@@ -88,7 +90,7 @@ const useStyles = createUseStyles('namespace', {
 
 function App() {
     const [val, setVal] = useState<number>(0);
-    const { 
+    const {
         join,
         activeSquare,
         testRed,
@@ -98,7 +100,7 @@ function App() {
         testAnimation
     } = useStyles();
     const [arr, setArr] = useState<number[]>([0, 1, 2, 3, 4]);
-    
+
     const isActive = (id: number): boolean => {
         //... some logic
         return true;
@@ -272,6 +274,7 @@ export const virtualProp = createVirtualProperty('test-virtual', {
 ```
 
 ### Properties setup
+
 For property to work correctly it must be passed in context
 
 ```tsx
@@ -324,7 +327,7 @@ function App() {
     const {
         join,
         test,
-        
+
     } = useStyles();
 
     return (
@@ -486,7 +489,7 @@ const glossiaContext = GlossiaContextManager.createContext({
 more complex example:
 
 ```tsx
-import {GlossiaContextManager, GlossiaContextProvider, renderContextToHtmlString} from "glossia";
+import { GlossiaContextManager, GlossiaContextProvider, renderContextToHtmlString } from "glossia";
 
 // in SSR mode it is important to set Glossia to development mode, otherwise caching will work and styles reloading will be blocked
 if (process.env.NODE_ENV === 'development') {
@@ -523,15 +526,16 @@ app.get('/', async (req, res) => {
 ```
 
 ## Hydration mode
-if you rendered styles on the server than it would be wastage rendering same styles on client side,
-fortunately Glossia has solution! You can run Glossia in _hydration_ mode by running helper function
-`getHydrationModeOptions()` which will extract all needed data from SSR rendered styles. In this case
-Glossia is almost zero-runtime styling solution (expect React context)
+
+if you rendered styles on the server than it would be wastage rendering same styles on client side, fortunately Glossia
+has solution! You can run Glossia in _hydration_ mode by running helper function
+`getHydrationModeOptions()` which will extract all needed data from SSR rendered styles. In this case Glossia is almost
+zero-runtime styling solution (expect React context)
 
 Example:
 
 ```tsx
-import {GlossiaContextManager, GlossiaContextProvider, getHydrationModeOptions} from "glossia";
+import { GlossiaContextManager, GlossiaContextProvider, getHydrationModeOptions } from "glossia";
 
 const glossiaContext = GlossiaContextManager.createContext({
     ...getHydrationModeOptions(),
@@ -568,3 +572,7 @@ I don't recommend that. Glossia is still in early stage and needs some improveme
 Probably not so much since it is still an early stage of development, nevertheless I would like glossia to rely on
 native css as much as it is possible while providing minimal api for js, I hope it gets faster with time
 
+## Alternatives?
+
+Probably the best alternative I currently know is `vanilla-extract` I like the general idea behind this lib while I'm
+not a big fan of it's api.
