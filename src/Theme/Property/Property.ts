@@ -2,6 +2,7 @@ import type { IProperty } from '../../../types/IProperty';
 import type { IDefaultVariant } from '../../../types/IVariantsMap';
 import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
+import { camelToKebabCase } from '../../common';
 
 export class Property<T extends IDefaultVariant> implements IProperty<T> {
     constructor(
@@ -16,7 +17,7 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
 
     toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject {
         return {
-            [propertyAdapter.getNativePropertyName(this.name)]: propertyAdapter.getNativePropertyGetter(`${this.name}-default`),
+            [propertyAdapter.getNativePropertyName(this.name)]: propertyAdapter.getNativePropertyGetter(`${camelToKebabCase(this.name)}-default`),
         };
     }
 
