@@ -2,7 +2,11 @@
 
 Glossia is a shortcut for latin "*Glossostigma elatinoides*"
 which is a small underwater plant, as its role model plant Glossia is a small solution for styling React components and
-theming web applications. I build it for blog because I wanted something more integrated with native CSS. All Glossia
+theming web applications, with built-in support for SSR and hydration modes whereby it remains almost 0 dependency lib.
+
+Glossia in hydration mode and rendered in SSR mode styles is zero-runtime styling solution.
+
+I build it for blog because I wanted something more integrated with native CSS. All Glossia
 theming system is based on pure CSS properties and classes which is real superpower. Apart from the above Glossia has no
 explicit dependencies expect React and Typescript what makes it small and safe for use.
 
