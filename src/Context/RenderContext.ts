@@ -33,6 +33,7 @@ export class RenderContext implements IRenderContext {
         public themes: ITheme[],
         readonly renderMode: IRenderMode,
         private readonly renderedNamespacesClassMapping: Record<string, Record<string, string>>,
+        private readonly developmentMode: boolean = false
     ) {
         for (const property of this.allProperties) {
             if (isProperty(property)) {
@@ -53,11 +54,13 @@ export class RenderContext implements IRenderContext {
     }
 
     useStyles(styles: Styles<any>) {
-        if (this.renderedNamespacesClassMapping[styles.namespace])
-            return;
+        if (!this.developmentMode) { // in development mode style may be overwritten
+            if (this.renderedNamespacesClassMapping[styles.namespace])
+                return;
 
-        if (this.renderedStaticStyles.has(styles))
-            return;
+            if (this.renderedStaticStyles.has(styles))
+                return;
+        }
 
         this.renderedStaticStyles.add(styles);
         this.renderer.render(styles.stylesheet.parsedStyles);

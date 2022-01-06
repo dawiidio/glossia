@@ -41,7 +41,11 @@ export class GlossiaContextManager {
 
     static getContextById(id: number): IRenderContext | undefined
 
-    static setPrerenderedClasses(prerendered: Record<string, Record<string, string>>)
+    static setPrerenderedClasses(prerendered: Record<string, Record<string, string>>): void
+
+    static setDevelopmentMode(): void
+
+    static isDevelopmentMode(): boolean
 }
 
 export function createUseStyles<S extends IStylesObject>(namespace: string, styles: S): () => IClasses<S>;

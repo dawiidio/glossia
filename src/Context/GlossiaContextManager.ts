@@ -14,6 +14,7 @@ export class GlossiaContextManager {
     private static contexts = new Map<number, RenderContext>();
     private static stylesNamespaces = new Map<string, IStyles<any>>();
     private static prerenderedClasses: Record<string, Record<string, string>> = {};
+    private static developmentMode: boolean = false;
 
     static createContext({
                              properties = [],
@@ -59,6 +60,14 @@ export class GlossiaContextManager {
         this.prerenderedClasses = prerendered;
     }
 
+    static setDevelopmentMode(): void {
+        this.developmentMode = true;
+    }
+
+    static isDevelopmentMode(): boolean {
+        return this.developmentMode;
+    }
+
     static destroyContext(context: RenderContext) {
         this.contexts.delete(context.id);
 
@@ -74,13 +83,13 @@ export class GlossiaContextManager {
     }
 
     static createStyles<S extends IStylesObject>(namespace: string, styles: S): Styles<S> {
-        if (this.stylesNamespaces.has(namespace))
+        if (!this.developmentMode && this.stylesNamespaces.has(namespace))
             return this.stylesNamespaces.get(namespace) as Styles<S>;
 
         const stylesClasses = new Styles<S>(
             styles,
             namespace,
-            this.prerenderedClasses[namespace] as Record<keyof S, string>
+            this.prerenderedClasses[namespace] as Record<keyof S, string>,
         );
 
         this.stylesNamespaces.set(namespace, stylesClasses);
