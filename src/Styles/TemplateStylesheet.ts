@@ -6,14 +6,18 @@ import type { IStylesheet } from '../../types/IStylesheet';
 import { parseStylesObject } from './parseStylesObject';
 import { fixMediaRules } from '../common';
 
-export class Stylesheet<S extends IStylesObject> implements IStylesheet<S> {
+/**
+ * Template style does not need class mapping since it is only used internally
+ * but, we need to have option for disable parsing in hydration mode
+ */
+export class TemplateStylesheet<S extends IStylesObject = any> implements IStylesheet<S> {
     styles: IParsedStyles = {};
     stylesClassesMapping: Record<keyof S, string>;
     parsedStyles: IFlatStylesObject = {};
 
-    constructor(stylesObject: S, ruleInterceptor: IRuleInterceptor = (val) => val, prerenderedClasses?: Record<keyof S, string>) {
-        if (prerenderedClasses) {
-            this.stylesClassesMapping = prerenderedClasses;
+    constructor(stylesObject: S, ruleInterceptor: IRuleInterceptor = (val) => val, disableStylesParsing?: boolean) {
+        if (disableStylesParsing) {
+            this.stylesClassesMapping = {} as Record<keyof S, string>;
         } else {
             const {
                 styles, stylesClassesMapping,

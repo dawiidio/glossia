@@ -8,3 +8,4 @@ export { GlossiaContextManager } from './Context/GlossiaContextManager';
 export { useProperty } from './React/useProperty';
 export { ThemeProvider } from './React/ThemeProvider';
 export { GlossiaContextProvider } from './React/GlossiaContextProvider';
+export { renderContextToHtmlString, getHydrationModeOptions } from './common';

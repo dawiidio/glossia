@@ -1,4 +1,4 @@
-import { Stylesheet } from '../Styles/Stylesheet';
+import { stylesheetFactory } from '../Styles/stylesheetFactory';
 import type { IProperty } from '../../types/IProperty';
 import type { IVirtualProperty } from '../../types/IVirtualProperty';
 import { InMemoryPropertyAdapter } from '../Theme/Property/InMemoryPropertyAdapter';
@@ -6,17 +6,19 @@ import type { IRenderer } from '../../types/IRenderer';
 import { Counter } from '../Counter/Counter';
 import type { IPropertyAdapter } from '../../types/IPropertyAdapter';
 import type { ITheme } from '../../types/ITheme';
-import { isProperty, isVirtualProperty, mergeThemesStylesObjects } from '../common';
+import { isHydrationMode, isProperty, isSSRMode, isVirtualProperty, mergeThemesStylesObjects } from '../common';
 import type { IVariant } from '../../types/IVariant';
 import { createInitialPropertiesCss } from '../Theme/Property/createInitialPropertiesCss';
 import { Styles } from './Styles';
 import type { IRenderContext } from '../../types/IRenderContext';
 import type { IPropertyWatcher } from '../../types/IPropertyWatcher';
+import type { IRenderMode } from '../../types/IRenderMode';
+import type { IStylesheet } from '../../types/IStylesheet';
 
 export class RenderContext implements IRenderContext {
     readonly renderedStaticStyles = new Set<Styles<any>>();
-    themeStylesheet?: Stylesheet<any>;
-    propertiesStylesheet?: Stylesheet<any>;
+    themeStylesheet?: IStylesheet<any>;
+    propertiesStylesheet?: IStylesheet<any>;
     readonly properties = new Map<string, IProperty<any>>();
     readonly virtualProperties = new Map<string, IVirtualProperty<any>>();
     readonly virtualPropertyStorage = new InMemoryPropertyAdapter();
@@ -29,7 +31,8 @@ export class RenderContext implements IRenderContext {
         readonly propertyAdapter: IPropertyAdapter,
         public allProperties: Array<IProperty<any> | IVirtualProperty<any>>,
         public themes: ITheme[],
-        readonly ssr: boolean,
+        readonly renderMode: IRenderMode,
+        private readonly renderedNamespacesClassMapping: Record<string, Record<string, string>>,
     ) {
         for (const property of this.allProperties) {
             if (isProperty(property)) {
@@ -50,11 +53,21 @@ export class RenderContext implements IRenderContext {
     }
 
     useStyles(styles: Styles<any>) {
+        if (this.renderedNamespacesClassMapping[styles.namespace])
+            return;
+
         if (this.renderedStaticStyles.has(styles))
             return;
 
         this.renderedStaticStyles.add(styles);
         this.renderer.render(styles.stylesheet.parsedStyles);
+    }
+
+    getStylesClassMapping(): Record<string, Record<string, string>> {
+        return [...this.renderedStaticStyles].reduce((acc, s) => ({
+            ...acc,
+            [s.namespace]: s.stylesheet.stylesClassesMapping,
+        }), {});
     }
 
     trigger(property: IProperty<any> | IVirtualProperty<any>, value: string) {
@@ -100,8 +113,16 @@ export class RenderContext implements IRenderContext {
     }
 
     renderThemingRelatedStylesheets() {
-        this.propertiesStylesheet = new Stylesheet<any>(createInitialPropertiesCss([...this.properties.values()], this.propertyAdapter));
-        this.themeStylesheet = new Stylesheet<any>(mergeThemesStylesObjects(this.themes));
+        this.propertiesStylesheet = stylesheetFactory<any>({
+            stylesObject: createInitialPropertiesCss([...this.properties.values()], this.propertyAdapter),
+            disableStylesParsing: isHydrationMode(this.renderMode),
+            type: 'template',
+        });
+        this.themeStylesheet = stylesheetFactory<any>({
+            stylesObject: mergeThemesStylesObjects(this.themes),
+            disableStylesParsing: isHydrationMode(this.renderMode),
+            type: 'template',
+        });
         this.renderer.render({
             ...this.propertiesStylesheet.parsedStyles,
             ...this.themeStylesheet.parsedStyles,
@@ -128,7 +149,7 @@ export class RenderContext implements IRenderContext {
         this.virtualProperties.clear();
         this.virtualPropertyStorage.clear();
 
-        if (this.ssr)
+        if (isSSRMode(this.renderMode))
             this.renderer.destroy();
     }
 }

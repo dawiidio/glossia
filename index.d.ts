@@ -40,6 +40,8 @@ export class GlossiaContextManager {
     static getContextByIndex(index: number): IRenderContext | undefined
 
     static getContextById(id: number): IRenderContext | undefined
+
+    static setPrerenderedClasses(prerendered: Record<string, Record<string, string>>)
 }
 
 export function createUseStyles<S extends IStylesObject>(namespace: string, styles: S): () => IClasses<S>;
@@ -57,3 +59,7 @@ export function createMediaVariant(value: string, mediaQuery: string | IVariant,
 export function createProperty<T extends IDefaultVariant>(name: string, variants: T): IProperty<T>
 
 export function createVirtualProperty<T extends IVariantsMap>(name: string, variants: T): IVirtualProperty<T>
+
+export function renderContextToHtmlString(ctx: IRenderContext, elementId?: string): string;
+
+export function getHydrationModeOptions(elementId?: string): Pick<ICreateContext, 'prerenderedData' | 'mode'>

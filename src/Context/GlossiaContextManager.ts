@@ -1,35 +1,28 @@
 import type { IStylesObject } from '../../types/IStylesObject';
-import type { IProperty } from '../../types/IProperty';
-import type { IVirtualProperty } from '../../types/IVirtualProperty';
-import type { ITheme } from '../../types/ITheme';
 import type { IStyles } from '../../types/IStyles';
-import { isSSR } from '../common';
+import type { ICreateContext } from '../../types/IGlossiaContextManager';
+import { isSSR, isSSRMode, RENDERER_ID, SSR_RENDERER_ID } from '../common';
 import { rendererFactory } from '../Renderer/rendererFactory';
 import { counterFactory } from '../Counter/counterFactory';
 import { propertyAdapterFactory } from '../Theme/Property/propertyAdapterFactory';
 import { RenderContext } from './RenderContext';
 import { Styles } from './Styles';
 
-const RENDERER_ID = 'client-styles';
-const SSR_RENDERER_ID = 'ssr-styles';
-
 const getId = (): number => Math.round(Math.random() * 1e6);
-
-export interface ICreateContext {
-    ssr?: boolean;
-    properties?: Array<IProperty<any> | IVirtualProperty<any>>;
-    themes?: ITheme[];
-}
 
 export class GlossiaContextManager {
     private static contexts = new Map<number, RenderContext>();
     private static stylesNamespaces = new Map<string, IStyles<any>>();
+    private static prerenderedClasses: Record<string, Record<string, string>> = {};
 
     static createContext({
-                             ssr = isSSR(),
                              properties = [],
                              themes = [],
+                             mode = isSSR() ? 'ssr' : 'dom',
+                             prerenderedData = {},
                          }: ICreateContext = {}) {
+        const ssr = isSSRMode(mode);
+
         const renderer = rendererFactory({
             ssr,
             elementId: ssr ? SSR_RENDERER_ID : RENDERER_ID,
@@ -53,12 +46,17 @@ export class GlossiaContextManager {
             propertyAdapter,
             properties,
             themes,
-            ssr,
+            mode,
+            prerenderedData,
         );
 
         this.contexts.set(ctxId, ctx);
 
         return ctx;
+    }
+
+    static setPrerenderedClasses(prerendered: Record<string, Record<string, string>>) {
+        this.prerenderedClasses = prerendered;
     }
 
     static destroyContext(context: RenderContext) {
@@ -79,10 +77,14 @@ export class GlossiaContextManager {
         if (this.stylesNamespaces.has(namespace))
             return this.stylesNamespaces.get(namespace) as Styles<S>;
 
-        const stylesCls = new Styles<S>(styles, namespace);
+        const stylesClasses = new Styles<S>(
+            styles,
+            namespace,
+            this.prerenderedClasses[namespace] as Record<keyof S, string>
+        );
 
-        this.stylesNamespaces.set(namespace, stylesCls);
+        this.stylesNamespaces.set(namespace, stylesClasses);
 
-        return stylesCls;
+        return stylesClasses;
     }
 }

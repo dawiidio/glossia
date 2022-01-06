@@ -1,13 +1,14 @@
-import { IProperty } from './IProperty';
-import { IVirtualProperty } from './IVirtualProperty';
-import { IRenderer } from './IRenderer';
-import { IPropertyAdapter } from './IPropertyAdapter';
-import { ITheme } from './ITheme';
-import { IVariant } from './IVariant';
-import { ICounter } from './ICounter';
-import { IPropertyWatcher } from './IPropertyWatcher';
-import { IStyles } from './IStyles';
-import { IStylesheet } from './IStylesheet';
+import type { IProperty } from './IProperty';
+import type { IVirtualProperty } from './IVirtualProperty';
+import type { IRenderer } from './IRenderer';
+import type { IPropertyAdapter } from './IPropertyAdapter';
+import type { ITheme } from './ITheme';
+import type { IVariant } from './IVariant';
+import type { ICounter } from './ICounter';
+import type { IPropertyWatcher } from './IPropertyWatcher';
+import type { IStyles } from './IStyles';
+import type { IStylesheet } from './IStylesheet';
+import type { IRenderMode } from './IRenderMode';
 
 export interface IRenderContext {
     renderedStaticStyles: Set<IStyles<any>>;
@@ -23,9 +24,11 @@ export interface IRenderContext {
     readonly propertyAdapter: IPropertyAdapter;
     allProperties: Array<IProperty<any> | IVirtualProperty<any>>;
     themes: ITheme[];
-    readonly ssr: boolean;
+    renderMode: IRenderMode;
 
     useStyles(styles: IStyles<any>): void;
+
+    getStylesClassMapping(): Record<string, Record<string, string>>
 
     trigger(property: IProperty<any> | IVirtualProperty<any>, value: string): void;
 

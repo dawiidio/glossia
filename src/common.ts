@@ -6,6 +6,9 @@ import type { IClasses, IClassName } from '../types/IClassNames';
 import type { IVariant } from '../types/IVariant';
 import type { IFlatStylesObject } from '../types/IFlatStylesObject';
 import type { ITheme } from '../types/ITheme';
+import type { IRenderMode } from '../types/IRenderMode';
+import type { IRenderContext } from '../types/IRenderContext';
+import type { ICreateContext } from '../types/IGlossiaContextManager';
 import { Property } from './Theme/Property/Property';
 import { useLayoutEffect } from 'react';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
@@ -27,6 +30,10 @@ export function extendVariantsMap(childVariants: Map<string, IVariant>, parentVa
 
 export const isSSR = (): boolean => typeof window === 'undefined';
 
+export const isSSRMode = (renderMode: IRenderMode): boolean => renderMode === 'ssr';
+export const isHydrationMode = (renderMode: IRenderMode): boolean => renderMode === 'hydration';
+export const isDOMMode = (renderMode: IRenderMode): boolean => renderMode === 'dom';
+
 export const isCSSRule = (rule: string = ''): boolean => rule.trimLeft().startsWith('@');
 export const isMediaRule = (rule: string): boolean => /(@media)/.test(rule);
 export const isGlobalRule = (rule: string): boolean => /(@global)/.test(rule);
@@ -34,7 +41,7 @@ export const isKeyframesRule = (rule: string): boolean => /(@keyframes)/.test(ru
 export const isRootPseudoRule = (rule: string): boolean => /(:root)/.test(rule);
 export const isClass = (rule: string): boolean => rule.startsWith('.');
 
-export function isRecord(predicate: string|Record<string, string>): predicate is Record<string, string> {
+export function isRecord(predicate: string | Record<string, string>): predicate is Record<string, string> {
     return typeof predicate === 'object';
 }
 
@@ -56,7 +63,7 @@ export const camelToKebabCase = (str: string) => str.replace(/[A-Z]/g, letter =>
 export const mergeThemesStylesObjects = (themes: ITheme[]): IStylesObject => {
     return themes.reduce((acc, theme) => ({
         ...acc,
-        ...theme.createThemeInitialCss()
+        ...theme.createThemeInitialCss(),
     }), {});
 };
 
@@ -64,7 +71,7 @@ export function createRootClassName(key: string): string {
     return `${camelToKebabCase(key)}`;
 }
 
-export function stringifyStylesObject(styles: IFlatStylesObject|string): string {
+export function stringifyStylesObject(styles: IFlatStylesObject | string): string {
     if (typeof styles === 'string')
         return `{ ${styles}`;
 
@@ -77,7 +84,7 @@ export function parseMediaAcc(mediaAcc: Record<string, Record<string, string>>):
 
         return {
             ...acc,
-            [media+'{']: `${nestedRulesString} }`
+            [media + '{']: `${nestedRulesString} }`,
         };
     }, {});
 }
@@ -94,6 +101,7 @@ export function fixMediaRules(fso: IParsedStyles): IFlatStylesObject {
                 mediaAcc[media] = {};
 
             mediaAcc[media][nestedSelector] = stringifyStylesObject(stylesObjectOrString);
+            continue;
         }
 
         acc[selector] = stringifyStylesObject(stylesObjectOrString);
@@ -101,22 +109,22 @@ export function fixMediaRules(fso: IParsedStyles): IFlatStylesObject {
 
     return {
         ...acc,
-        ...parseMediaAcc(mediaAcc)
-    }
+        ...parseMediaAcc(mediaAcc),
+    };
 }
 
 export const useEffectOrCallImmediately = isSSR()
     ? ((cb: (() => any), arr: Array<any>) => cb())
     : useLayoutEffect;
 
-export function joinClassNames(...classes: Array<string|IClassName>): string {
+export function joinClassNames(...classes: Array<string | IClassName>): string {
     return classes.join(' ');
 }
 
 export function createClassName(className: string): IClassName {
     const f = function ClassName(renderClass: boolean) {
         return renderClass ? className : '';
-    }
+    };
 
     f.toString = () => className;
 
@@ -130,6 +138,41 @@ export function createClasses<S>(classMapping: Record<keyof S, string>): IClasse
         // @ts-ignore
         [key]: createClassName(className),
     }), {
-        join: joinClassNames
+        join: joinClassNames,
     });
+}
+
+export const RENDERER_ID = 'glossia-dom-styles';
+export const SSR_RENDERER_ID = 'glossia-ssr-styles';
+const DATA_ATTRIBUTE = 'data-classes-mapping';
+
+export function renderContextToHtmlString(ctx: IRenderContext, elementId = SSR_RENDERER_ID): string {
+    return `<style id="${elementId}" ${DATA_ATTRIBUTE}="${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', "'")}">${ctx}</style>`;
+}
+
+export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICreateContext, 'prerenderedData' | 'mode'> {
+    if (isSSR())
+        throw new Error(`Glossia function getHydrationModeOptions() can not be called on server side`);
+
+    const el = document.getElementById(elementId)
+
+    if (!el)
+        throw new Error(`Glossia can not find SSR rendered element with id #${elementId}`);
+
+    let stringData = el.getAttribute(DATA_ATTRIBUTE);
+
+    if (!stringData)
+        throw new Error(`Glossia can not find prerendered data in element with id #${elementId}`);
+
+    stringData = stringData.replaceAll("'", '"');
+
+    try {
+        return {
+            mode: 'hydration',
+            prerenderedData: JSON.parse(stringData)
+        }
+    }
+    catch {
+        throw new Error(`Parsing error, Glossia can not parse prerendered data from SSR element with id #${elementId}`)
+    }
 }
