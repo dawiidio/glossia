@@ -488,6 +488,11 @@ more complex example:
 ```tsx
 import {GlossiaContextManager, GlossiaContextProvider, renderContextToHtmlString} from "glossia";
 
+// in SSR mode it is important to set Glossia to development mode, otherwise caching will work and styles reloading will be blocked
+if (process.env.NODE_ENV === 'development') {
+    GlossiaContextManager.setDevelopmentMode();
+}
+
 app.get('/', async (req, res) => {
     const glossiaContext = GlossiaContextManager.createContext();
 
