@@ -12,6 +12,7 @@ import type { ICreateContext } from '../types/IGlossiaContextManager';
 import { Property } from './Theme/Property/Property';
 import { useLayoutEffect } from 'react';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
+import { GlossiaContextManager } from './Context/GlossiaContextManager';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property;
@@ -167,9 +168,13 @@ export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICrea
     stringData = stringData.replaceAll("'", '"');
 
     try {
+        const prerenderedData = JSON.parse(stringData);
+
+        GlossiaContextManager.setPrerenderedClasses(prerenderedData);
+
         return {
             mode: 'hydration',
-            prerenderedData: JSON.parse(stringData)
+            prerenderedData,
         }
     }
     catch {

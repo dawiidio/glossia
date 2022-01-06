@@ -468,20 +468,22 @@ function App() {
 
 WARNING: dynamic values don't work with scoped variables in themes, only with top level properties
 
-## SSR
+## SSR mode
 
-glossia works also in server side mode. SSR will be detected automatically or you can enforce it by passing `ssr` option
-while creating context
+glossia also works in server side mode. SSR will be detected automatically or you can enforce it by passing mode option
+set to `ssr` while creating context
 
 ```tsx
 const glossiaContext = GlossiaContextManager.createContext({
-    ssr: true
+    mode: 'ssr'
 });
 ```
 
 more complex example:
 
 ```tsx
+import {GlossiaContextManager, GlossiaContextProvider, renderContextToHtmlString} from "glossia";
+
 app.get('/', async (req, res) => {
     const glossiaContext = GlossiaContextManager.createContext();
 
@@ -497,7 +499,7 @@ app.get('/', async (req, res) => {
       <head>
         <title>Glossia SSR Example</title>
         <style>
-        ${glossiaContext.toString()}
+        ${renderContextToHtmlString(glossiaContext)}
         </style>
         <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' />
       </head>
@@ -507,9 +509,43 @@ app.get('/', async (req, res) => {
     </html>
     `);
 
-
     GlossiaContextManager.destroyContext(glossiaContext);
 });
+```
+
+## Hydration mode
+if you rendered styles on the server than it would be wastage rendering same styles on client side,
+fortunately Glossia has solution! You can run Glossia in _hydration_ mode by running helper function
+`getHydrationModeOptions()` which will extract all needed data from SSR rendered styles. In this case
+Glossia is almost zero-runtime styling solution (expect React context)
+
+Example:
+
+```tsx
+import {GlossiaContextManager, GlossiaContextProvider, getHydrationModeOptions} from "glossia";
+
+const glossiaContext = GlossiaContextManager.createContext({
+    ...getHydrationModeOptions(),
+    properties: [
+        primaryColors,
+        bg,
+        virtualProp
+    ],
+    themes: [
+        lightTheme,
+        darkTheme
+    ]
+});
+
+ReactDOM.render(
+    <React.StrictMode>
+        <GlossiaContextProvider value={glossiaContext}>
+            <App />
+        </GlossiaContextProvider>
+    </React.StrictMode>,
+    document.getElementById('root')
+);
+
 ```
 
 ## FAQ
