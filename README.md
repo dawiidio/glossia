@@ -128,6 +128,26 @@ function App() {
 }
 ```
 
+### Global styles
+
+You can also create global styles like this:
+
+```tsx
+export const fontFamily = createProperty('fontFamily', {
+    default: createVariant(`'Lato', sans-serif`),
+});
+
+createGlobalStyles('global-styles', {
+    body: {
+        margin: '0',
+        padding: '0',
+        fontFamily: fontFamily
+    }
+});
+```
+
+as you can see above, properties are also allowed in global styles
+
 ## Theming
 
 Glossia theming system is completely based on native CSS. It only gives you nice JS api to work with CSS variables and
@@ -257,6 +277,23 @@ above example generates CSS:
     --bg-color-default: var(--primary-color-default);
     --bg-color: var(--bg-color-default);
 }
+```
+
+Another interesting case about properties and variants is that you can use variant as property once it was assigned to
+property. So for example you want to create text with secondary font but this font will not change across themes, so you
+can simply use variant from property in styles:
+
+```tsx
+export const fontFamily = createProperty('fontFamily', {
+    default: createVariant(`'Nunito', sans-serif`),
+    secondary: createVariant(`'Roboto Mono', monospace`),
+});
+
+const useStyles = createUseStyles('demo', {
+    specialText: {
+        fontFamily: fontFamily.variants.secondary
+    }
+});
 ```
 
 ### Virtual properties

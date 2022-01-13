@@ -13,9 +13,14 @@ import { Property } from './Theme/Property/Property';
 import { useLayoutEffect } from 'react';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
 import { GlossiaContextManager } from './Context/GlossiaContextManager';
+import { Variant } from './Theme/Variant/Variant';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property;
+}
+
+export function isVariant(property: object | string | number | IProperty<any>): property is IVariant {
+    return property instanceof Variant;
 }
 
 export function isVirtualProperty(property: object | string | number): property is IVirtualProperty<any> {

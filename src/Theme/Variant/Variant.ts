@@ -1,10 +1,11 @@
 import type { IVariant } from '../../../types/IVariant';
-import type { IBaseProperty } from '../../../types/IBaseProperty';
+import { camelToKebabCase } from '../../common';
+import { IProperty } from '../../../types/IProperty';
 
 export class Variant implements IVariant {
     constructor(
         public readonly value: string,
-        public readonly property?: IBaseProperty<any>,
+        public readonly property?: IProperty<any>,
     ) {}
 
     getKeyId(): string {
@@ -15,6 +16,10 @@ export class Variant implements IVariant {
     }
 
     toString() {
+        if (this.property) {
+            return `var(--${this.property.name}-${camelToKebabCase(this.property.getVariantName(this))})`;
+        }
+
         return this.value;
     }
 }

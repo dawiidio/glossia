@@ -3,15 +3,20 @@ import type { IDefaultVariant } from '../../../types/IVariantsMap';
 import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 import { camelToKebabCase } from '../../common';
+import { IVariant } from '../../../types/IVariant';
 
 export class Property<T extends IDefaultVariant> implements IProperty<T> {
+    private variantToNameMapping = new WeakMap<IVariant, string>();
+
     constructor(
         public readonly name: string,
         public readonly variants: T,
     ) {
-        Object.values(this.variants).forEach(v => {
-            if (!v.property)
-                v.property = this;
+        Object.entries(this.variants).forEach(([name, variant]) => {
+            if (!variant.property)
+                variant.property = this;
+
+            this.variantToNameMapping.set(variant, name);
         });
     }
 
@@ -39,6 +44,13 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
                 [propertyAdapter.getNativePropertyName(`${this.name}-${variantName}`)]: val,
             };
         }, {});
+    }
+
+    getVariantName(variant: IVariant): string {
+        if (!this.variantToNameMapping.has(variant))
+            throw new Error(`Property ${this.name} have no such variant as passed`);
+
+        return this.variantToNameMapping.get(variant) as string;
     }
 
     toString() {
