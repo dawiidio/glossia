@@ -46,6 +46,8 @@ export class GlossiaContextManager {
     static setDevelopmentMode(): void
 
     static isDevelopmentMode(): boolean
+
+    static createGlobalStyles<S extends IStylesObject>(namespace: string, styles: S): void
 }
 
 export function createUseStyles<S extends IStylesObject>(namespace: string, styles: S): () => IClasses<S>;
@@ -67,3 +69,5 @@ export function createVirtualProperty<T extends IVariantsMap>(name: string, vari
 export function renderContextToHtmlString(ctx: IRenderContext, elementId?: string): string;
 
 export function getHydrationModeOptions(elementId?: string): Pick<ICreateContext, 'prerenderedData' | 'mode'>
+
+export function createGlobalStyles(namespace: string, styles: IStylesObject): void;

@@ -8,6 +8,7 @@ export interface IParseStylesArgs<S extends IStylesObject> {
     level?: number
     ruleInterceptor?: IRuleInterceptor
     propertyAdapter?: IPropertyAdapter
+    global?: boolean
 }
 
 export interface IParseStylesReturnData<S extends IStylesObject> {

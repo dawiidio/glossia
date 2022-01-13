@@ -1,4 +1,5 @@
 export { createUseStyles } from './React/createUseStyles';
+export { createGlobalStyles } from './Styles/createGlobalStyles';
 export { createVirtualProperty } from './Theme/Property/createVirtualProperty';
 export { createProperty } from './Theme/Property/createProperty';
 export { createMediaVariant } from './Theme/Variant/createMediaVariant';

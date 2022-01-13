@@ -9,7 +9,7 @@ import {
     shouldCreateClassSelector,
 } from '../common';
 
-export function createValidCssRulePath(ruleOrSelector: string, parent: ICSSRulePath): ICSSRulePath {
+export function createValidCssRulePath(ruleOrSelector: string, parent: ICSSRulePath, global?: boolean): ICSSRulePath {
     parent = parent[0] === '' ? parent.slice(1) : parent;
 
     if (isCSSRule(ruleOrSelector) && !parent.length) {
@@ -37,10 +37,10 @@ export function createValidCssRulePath(ruleOrSelector: string, parent: ICSSRuleP
 
             return [
                 ...parent,
-                shouldCreateClassSelector(parent) ? `.${createRootClassName(ruleOrSelector)}` : ruleOrSelector,
+                shouldCreateClassSelector(parent, global) ? `.${createRootClassName(ruleOrSelector)}` : ruleOrSelector,
             ];
         }
 
-        return [`.${createRootClassName(ruleOrSelector)}`];
+        return [shouldCreateClassSelector(parent, global) ? `.${createRootClassName(ruleOrSelector)}` : ruleOrSelector];
     }
 }

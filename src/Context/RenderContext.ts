@@ -14,6 +14,7 @@ import type { IRenderContext } from '../../types/IRenderContext';
 import type { IPropertyWatcher } from '../../types/IPropertyWatcher';
 import type { IRenderMode } from '../../types/IRenderMode';
 import type { IStylesheet } from '../../types/IStylesheet';
+import { GlossiaContextManager } from './GlossiaContextManager';
 
 export class RenderContext implements IRenderContext {
     readonly renderedStaticStyles = new Set<Styles<any>>();
@@ -33,7 +34,7 @@ export class RenderContext implements IRenderContext {
         public themes: ITheme[],
         readonly renderMode: IRenderMode,
         private readonly renderedNamespacesClassMapping: Record<string, Record<string, string>>,
-        private readonly developmentMode: boolean = false
+        private readonly developmentMode: boolean = false,
     ) {
         for (const property of this.allProperties) {
             if (isProperty(property)) {
@@ -50,7 +51,7 @@ export class RenderContext implements IRenderContext {
             this.virtualProperties.set(property.name, property);
         }
 
-        this.renderThemingRelatedStylesheets();
+        this.renderGlobalStylesheets();
     }
 
     useStyles(styles: Styles<any>) {
@@ -115,7 +116,7 @@ export class RenderContext implements IRenderContext {
         };
     }
 
-    renderThemingRelatedStylesheets() {
+    renderGlobalStylesheets() {
         this.propertiesStylesheet = stylesheetFactory<any>({
             stylesObject: createInitialPropertiesCss([...this.properties.values()], this.propertyAdapter),
             disableStylesParsing: isHydrationMode(this.renderMode),
@@ -129,6 +130,10 @@ export class RenderContext implements IRenderContext {
         this.renderer.render({
             ...this.propertiesStylesheet.parsedStyles,
             ...this.themeStylesheet.parsedStyles,
+            ...GlossiaContextManager.getGlobalStyles().reduce((acc, s) => ({
+                ...acc,
+                ...s.stylesheet.parsedStyles,
+            }), {}),
         });
     }
 

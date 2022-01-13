@@ -54,8 +54,9 @@ export function replaceParentReference(selector: string, value: string): string 
     return selector.replaceAll('&', value);
 }
 
-export function shouldCreateClassSelector(parent: string[]) {
-    return (parent.length === 0) ||
+export function shouldCreateClassSelector(parent: string[], global?: boolean) {
+    return !global &&
+        (parent.length === 0) ||
         (parent.length > 1 && isMediaRule(parent[0]));
 }
 
@@ -148,14 +149,14 @@ export const SSR_RENDERER_ID = 'glossia-ssr-styles';
 const DATA_ATTRIBUTE = 'data-classes-mapping';
 
 export function renderContextToHtmlString(ctx: IRenderContext, elementId = SSR_RENDERER_ID): string {
-    return `<style id="${elementId}" ${DATA_ATTRIBUTE}="${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', "'")}">${ctx}</style>`;
+    return `<style id='${elementId}' ${DATA_ATTRIBUTE}='${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', '\'')}'>${ctx}</style>`;
 }
 
 export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICreateContext, 'prerenderedData' | 'mode'> {
     if (isSSR())
         throw new Error(`Glossia function getHydrationModeOptions() can not be called on server side`);
 
-    const el = document.getElementById(elementId)
+    const el = document.getElementById(elementId);
 
     if (!el)
         throw new Error(`Glossia can not find SSR rendered element with id #${elementId}`);
@@ -165,7 +166,7 @@ export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICrea
     if (!stringData)
         throw new Error(`Glossia can not find prerendered data in element with id #${elementId}`);
 
-    stringData = stringData.replaceAll("'", '"');
+    stringData = stringData.replaceAll('\'', '"');
 
     try {
         const prerenderedData = JSON.parse(stringData);
@@ -175,9 +176,10 @@ export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICrea
         return {
             mode: 'hydration',
             prerenderedData,
-        }
-    }
-    catch {
-        throw new Error(`Parsing error, Glossia can not parse prerendered data from SSR element with id #${elementId}`)
+        };
+    } catch {
+        throw new Error(`Parsing error, Glossia can not parse prerendered data from SSR element with id #${elementId}`);
     }
 }
+
+export const GLOBAL_NAMESPACE = '@@GLOBAL';

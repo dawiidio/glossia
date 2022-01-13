@@ -8,11 +8,13 @@ export function parseStylesObject<S extends IStylesObject>({
                                                                styles,
                                                                level = 0,
                                                                ruleInterceptor = (val) => val,
+                                                               global,
                                                            }: IParseStylesArgs<S>): IParseStylesReturnData<S> {
     let stylesAcc: Record<string, Record<string, string> | string> = {};
     let stylesClassesMapping: Record<keyof S, string> = {} as Record<keyof S, string>;
 
     for (const [key, value] of Object.entries(styles)) {
+        // this part parses key: value css properties for example "color: red;" will be parsed here
         if ((typeof value === 'string' || typeof value === 'number' || isProperty(value)) && level !== 0) {
             const selectorString = parentSelectorPath.join(' ');
 
@@ -25,8 +27,8 @@ export function parseStylesObject<S extends IStylesObject>({
                 temp[camelToKebabCase(key)] = String(value);
         } else if (typeof value === 'function') {
             throw new Error(`Function passed under key "${key}" - Glossia does not support dynamic styles`);
-        } else {
-            const selector = ruleInterceptor(createValidCssRulePath(key, parentSelectorPath));
+        } else { // this part parses nested styles
+            const selector = ruleInterceptor(createValidCssRulePath(key, parentSelectorPath, global));
             const styles = value;
 
             if (level === 0 && isClass(selector[0]) && selector.length === 1) {
@@ -50,6 +52,7 @@ export function parseStylesObject<S extends IStylesObject>({
                 styles,
                 parentSelectorPath: selector,
                 level: level + 1,
+                global
             });
 
             stylesAcc = {

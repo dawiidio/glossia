@@ -7,12 +7,14 @@ import { counterFactory } from '../Counter/counterFactory';
 import { propertyAdapterFactory } from '../Theme/Property/propertyAdapterFactory';
 import { RenderContext } from './RenderContext';
 import { Styles } from './Styles';
+import { GlobalStyles } from './GlobalStyles';
 
 const getId = (): number => Math.round(Math.random() * 1e6);
 
 export class GlossiaContextManager {
     private static contexts = new Map<number, RenderContext>();
     private static stylesNamespaces = new Map<string, IStyles<any>>();
+    private static globalStylesNamespaces = new Map<string, IStyles<any>>();
     private static prerenderedClasses: Record<string, Record<string, string>> = {};
     private static developmentMode: boolean = false;
 
@@ -95,5 +97,19 @@ export class GlossiaContextManager {
         this.stylesNamespaces.set(namespace, stylesClasses);
 
         return stylesClasses;
+    }
+
+    static createGlobalStyles<S extends IStylesObject>(namespace: string, styles: S): void {
+        if (!this.developmentMode && this.globalStylesNamespaces.has(namespace))
+            return;
+
+        this.globalStylesNamespaces.set(namespace, new GlobalStyles<S>(
+            styles,
+            namespace
+        ));
+    }
+
+    static getGlobalStyles(): IStyles<any>[] {
+        return [...this.globalStylesNamespaces.values()];
     }
 }

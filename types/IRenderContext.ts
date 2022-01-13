@@ -38,7 +38,7 @@ export interface IRenderContext {
 
     watchProperty(property: IProperty<any> | IVirtualProperty<any>, callback: IPropertyWatcher): (() => void);
 
-    renderThemingRelatedStylesheets(): void;
+    renderGlobalStylesheets(): void;
 
     isThemeRendered(theme: ITheme): any;
 
