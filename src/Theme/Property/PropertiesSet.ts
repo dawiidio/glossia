@@ -1,11 +1,10 @@
 import type { IProperty } from '../../../types/IProperty';
-import type { IDefaultVariant } from '../../../types/IVariantsMap';
 import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
-import { camelToKebabCase } from '../../common';
 import { IVariant } from '../../../types/IVariant';
+import { IVariantsMap } from '../../../types/IVariantsMap';
 
-export class Property<T extends IDefaultVariant> implements IProperty<T> {
+export class PropertiesSet<T extends IVariantsMap> implements IProperty<T> {
     private variantToNameMapping = new WeakMap<IVariant, string>();
 
     constructor(
@@ -21,9 +20,7 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
     }
 
     toDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject {
-        return {
-            [propertyAdapter.getNativePropertyName(this.name)]: propertyAdapter.getNativePropertyGetter(`${camelToKebabCase(this.name)}-default`),
-        };
+        return {};
     }
 
     toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IFlatStylesObject {
@@ -36,7 +33,7 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
                 if (!variant.property)
                     throw new Error('Variant must point to its property');
 
-                val = propertyAdapter.getNativePropertyGetter(`${variant.property.name}-${variant.property.getVariantName(variant)}`);
+                val = propertyAdapter.getNativePropertyGetter(`${variant.property.name}-${variantName}`);
             }
 
             return {
@@ -54,8 +51,6 @@ export class Property<T extends IDefaultVariant> implements IProperty<T> {
     }
 
     toString() {
-        // todo toString() method is used in parseStylesObject on static styles when we have no access
-        // to context, unfortunately it breaks propertyAdapter pattern as it is so in future should be changed
-        return `var(--${this.name})`;
+        throw new Error(`PropertiesSet can not be accessed by reference`);
     }
 }

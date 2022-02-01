@@ -296,7 +296,33 @@ const useStyles = createUseStyles('demo', {
 });
 ```
 
+### Properties set
+
+Properties sets are regular properties, only one difference is that they do not have a default value so
+they can not be used in styles as normal properties, only their variants. They are useful for creating 
+color palettes, because in this case you don't need a default value, you want to store colors in css 
+variables without dynamic switching.
+
+```tsx
+export const palette = createPropertiesSet('palette', {
+    primary: createVariant('red'),
+    swcondary: createVariant('green'),
+});
+
+const useStyles = createUseStyles('demo', {
+    specialText: {
+        color: palette // this throws error because you can not access property without default value 
+    },
+    verySpecialText: {
+        color: palette.variants.primary // and this is ok! 
+    }
+});
+
+```
+
 ### Virtual properties
+
+__!DEPRECATED!__ This functionality will be removed in next iterations
 
 The difference between virtual property and regular property is that for the first ones CSS variables are not created.
 Virtual properties lives only in memory.

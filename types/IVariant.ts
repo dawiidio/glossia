@@ -1,7 +1,7 @@
-import { IBaseProperty } from './IBaseProperty';
+import type { IProperty } from './IProperty';
 
 export interface IVariant {
-    property?: IBaseProperty<any>
+    property?: IProperty<any>
     mediaQuery?: string
     value: string
 
