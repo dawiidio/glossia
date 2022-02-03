@@ -184,22 +184,6 @@ const bg2 = createProperty('bg-color2', {
 });
 ```
 
-there is additional variant type called MediaVariant used in themes, it creates value which will be assigned to property
-if passed media query is fulfilled. Example:
-
-```tsx
-const bg = createProperty('bg-color', {
-    default: createVariant('white'),
-});
-
-const breakpoint = createVariant('all and (max-width: 1000px)');
-
-const darkTheme = createTheme('dark', [
-    createVariant('#000', bg), // if dark theme is active than property bg will be set to #000
-    createMediaVariant('green', sm, bg), // if dark theme is active and media from breakpoint are met than bg will be set to green
-]);
-```
-
 worth of note is also fact that you can create variant for any property dynamically like this:
 
 ```tsx
@@ -207,6 +191,35 @@ createVariant('#000', bg)
 ```
 
 but above notation will not create new variable, it will overwrite value for property only in theme scope.
+
+### Media Variants
+Media variants are variants with additional media rules
+
+```tsx
+export const breakpoints = {
+    l: 'all and (min-width: 1200px)',
+};
+
+export const test = createProperty('test', {
+    default: createMediaVariant({
+        default: createVariant('pink'),
+        [breakpoints.l]: createVariant('blue'), // if screen wider than 1200px then set variable to blue
+    }),
+});
+
+// Media variant can be used in theme
+export const theme = createTheme('theme', [
+    createMediaVariant({
+        default: createVariant('green'), 
+        [breakpoints.l]: createVariant('yellow'),
+    }, test),
+]);
+
+// Media variant can be overriden by normal variant, in this case variable will be always red 
+export const theme = createTheme('theme', [
+    createVariant('red', test),
+]);
+```
 
 ### Properties
 

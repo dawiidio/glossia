@@ -1,8 +1,8 @@
 import type { IProperty } from './IProperty';
+import { IBaseVariant } from './IBaseVariant';
 
-export interface IVariant {
+export interface IVariant extends IBaseVariant {
     property?: IProperty<any>
-    mediaQuery?: string
     value: string
 
     getKeyId(): string

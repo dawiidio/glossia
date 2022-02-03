@@ -1,16 +1,18 @@
-import { Variant } from './Variant';
-import { IProperty } from '../../../types/IProperty';
+import type { IProperty } from '../../../types/IProperty';
+import type { IMediaVariantVariant } from '../../../types/IMediaVariant';
+import { IDefaultVariant } from '../../../types/IVariantsMap';
 
-export class MediaVariant extends Variant {
+export class MediaVariant implements IMediaVariantVariant {
     constructor(
-        value: string,
-        public mediaQuery: string,
-        property?: IProperty<any>,
+        public mediaQueries: IDefaultVariant,
+        public property?: IProperty<any>,
     ) {
-        super(value, property);
     }
 
     getKeyId(): string {
-        return `${super.getKeyId()} ${this.mediaQuery}`;
+        if (this.property)
+            return this.property.name;
+
+        return '';
     }
 }

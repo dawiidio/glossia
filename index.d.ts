@@ -9,6 +9,7 @@ import type { IVariant } from './types/IVariant';
 import type { IVirtualProperty } from './types/IVirtualProperty';
 import type { IDefaultVariant, IVariantsMap } from './types/IVariantsMap';
 import type { IClasses, IClassName } from './types/IClassNames';
+import type { IMediaVariantVariant } from './types/IMediaVariant';
 
 export type { IClasses, IClassName } from './types/IClassNames';
 export type { ITheme } from './types/ITheme';
@@ -56,11 +57,11 @@ export const ThemeProvider: FC<IThemeProviderProps>;
 
 export function useProperty<T extends IVariantsMap>(property: IProperty<T>): [string, ((newValue: string | number | IVariant) => void)]
 
-export function createTheme(name: string, variants: IVariant[], parent?: ITheme): ITheme;
+export function createTheme(name: string, variants: Array<IVariant|IMediaVariantVariant>, parent?: ITheme): ITheme;
 
 export function createVariant(value: string, cssVar?: IProperty<any>): IVariant;
 
-export function createMediaVariant(value: string, mediaQuery: string | IVariant, cssVar?: IProperty<any>): IVariant;
+export function createMediaVariant(mediaQueries: Record<string, IVariant | IMediaVariantVariant>, cssVar?: IProperty<any>): IMediaVariantVariant
 
 export function createProperty<T extends IDefaultVariant>(name: string, variants: T): IProperty<T>
 

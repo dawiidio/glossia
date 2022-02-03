@@ -3,9 +3,11 @@ import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 import { IVariant } from '../../../types/IVariant';
 import { IVariantsMap } from '../../../types/IVariantsMap';
+import { IMediaVariantVariant } from '../../../types/IMediaVariant';
+import { isMediaVariant, isVariant } from '../../common';
 
 export class PropertiesSet<T extends IVariantsMap> implements IProperty<T> {
-    private variantToNameMapping = new WeakMap<IVariant, string>();
+    private variantToNameMapping = new WeakMap<IVariant|IMediaVariantVariant, string>();
 
     constructor(
         public readonly name: string,
@@ -28,7 +30,15 @@ export class PropertiesSet<T extends IVariantsMap> implements IProperty<T> {
             let val: string;
 
             if (variant.property?.name === this.name) {
-                val = variant.value;
+                if (isMediaVariant(variant)) {
+                    val = ''
+                }
+                else if (isVariant(variant)) {
+                    val = variant.value;
+                }
+                else {
+                    throw new Error(`Unknown variant type`);
+                }
             } else {
                 if (!variant.property)
                     throw new Error('Variant must point to its property');

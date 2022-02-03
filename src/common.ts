@@ -15,20 +15,25 @@ import { VirtualProperty } from './Theme/Variant/VirtualProperty';
 import { GlossiaContextManager } from './Context/GlossiaContextManager';
 import { Variant } from './Theme/Variant/Variant';
 import { PropertiesSet } from './Theme/Property/PropertiesSet';
+import { MediaVariant } from './Theme/Variant/MediaVariant';
+import { IMediaVariantVariant } from '../types/IMediaVariant';
+import { IPropertyAdapter } from '../types/IPropertyAdapter';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property || property instanceof PropertiesSet;
 }
 
-export function isVariant(property: object | string | number | IProperty<any>): property is IVariant {
+export function isVariant(property: object | string | number | IProperty<any> | IMediaVariantVariant): property is IVariant {
     return property instanceof Variant;
 }
+
+export const isMediaVariant = (variant: IVariant | IMediaVariantVariant): variant is MediaVariant => variant instanceof MediaVariant;
 
 export function isVirtualProperty(property: object | string | number): property is IVirtualProperty<any> {
     return property instanceof VirtualProperty;
 }
 
-export function extendVariantsMap(childVariants: Map<string, IVariant>, parentVariants: Map<string, IVariant>): Map<string, IVariant> {
+export function extendVariantsMap(childVariants: Map<string, IVariant|IMediaVariantVariant>, parentVariants: Map<string, IVariant|IMediaVariantVariant>): Map<string, IVariant|IMediaVariantVariant> {
     return new Map([
         ...parentVariants.entries(),
         ...childVariants.entries(),
@@ -68,11 +73,34 @@ export function shouldCreateClassSelector(parent: string[], global?: boolean) {
 
 export const camelToKebabCase = (str: string) => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
-export const mergeThemesStylesObjects = (themes: ITheme[]): IStylesObject => {
-    return themes.reduce((acc, theme) => ({
+export function mergeObjectWithMediaRules(acc: Record<string, any>, obj: Record<string, any>): Record<string, any> {
+    let temp = {
         ...acc,
-        ...theme.createThemeInitialCss(),
-    }), {});
+    };
+
+    for (const [key, val] of Object.entries(obj)) {
+        if (temp[key] && key.startsWith('@media')) {
+            temp[key] = {
+                ...(temp[key] as {}),
+                ...(val as {}),
+            }
+        }
+        else {
+            temp[key] = val;
+        }
+    }
+
+    return temp;
+}
+
+export const mergeManyIStylesObjects = (...objects: IStylesObject[]): IStylesObject => {
+    return objects.reduce((acc, obj) => mergeObjectWithMediaRules(acc, obj), {});
+}
+
+export const mergeThemesStylesObjects = (themes: ITheme[], propertyAdapter: IPropertyAdapter): IStylesObject => {
+    return themes.reduce<IStylesObject>((acc, theme) =>{
+        return mergeObjectWithMediaRules(acc, theme.createThemeInitialCss(propertyAdapter));
+    }, {});
 };
 
 export function createRootClassName(key: string): string {
@@ -155,7 +183,7 @@ export const SSR_RENDERER_ID = 'glossia-ssr-styles';
 const DATA_ATTRIBUTE = 'data-classes-mapping';
 
 export function renderContextToHtmlString(ctx: IRenderContext, elementId = SSR_RENDERER_ID): string {
-    return `<style id='${elementId}' ${DATA_ATTRIBUTE}="${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', '\'')}">${ctx}</style>`;
+    return `<style id='${elementId}' ${DATA_ATTRIBUTE}='${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', '\'')}'>${ctx}</style>`;
 }
 
 export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICreateContext, 'prerenderedData' | 'mode'> {

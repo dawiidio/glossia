@@ -6,9 +6,15 @@ import type { IRenderer } from '../../types/IRenderer';
 import { Counter } from '../Counter/Counter';
 import type { IPropertyAdapter } from '../../types/IPropertyAdapter';
 import type { ITheme } from '../../types/ITheme';
-import { isHydrationMode, isProperty, isSSRMode, isVirtualProperty, mergeThemesStylesObjects } from '../common';
+import {
+    isHydrationMode,
+    isProperty,
+    isSSRMode,
+    isVirtualProperty, mergeManyIStylesObjects,
+    mergeThemesStylesObjects,
+} from '../common';
 import type { IVariant } from '../../types/IVariant';
-import { createInitialPropertiesCss } from '../Theme/Property/createInitialPropertiesCss';
+import { createPropertiesCss } from '../Theme/Property/createPropertiesCss';
 import { Styles } from './Styles';
 import type { IRenderContext } from '../../types/IRenderContext';
 import type { IPropertyWatcher } from '../../types/IPropertyWatcher';
@@ -18,7 +24,7 @@ import { GlossiaContextManager } from './GlossiaContextManager';
 
 export class RenderContext implements IRenderContext {
     readonly renderedStaticStyles = new Set<Styles<any>>();
-    themeStylesheet?: IStylesheet<any>;
+    internalGlobalStylesheet?: IStylesheet<any>;
     propertiesStylesheet?: IStylesheet<any>;
     readonly properties = new Map<string, IProperty<any>>();
     readonly virtualProperties = new Map<string, IVirtualProperty<any>>();
@@ -117,19 +123,17 @@ export class RenderContext implements IRenderContext {
     }
 
     renderGlobalStylesheets() {
-        this.propertiesStylesheet = stylesheetFactory<any>({
-            stylesObject: createInitialPropertiesCss([...this.properties.values()], this.propertyAdapter),
+        this.internalGlobalStylesheet = stylesheetFactory<any>({
+            stylesObject: mergeManyIStylesObjects(
+                mergeThemesStylesObjects(this.themes, this.propertyAdapter),
+                createPropertiesCss([...this.properties.values()], this.propertyAdapter),
+            ),
             disableStylesParsing: isHydrationMode(this.renderMode),
             type: 'template',
         });
-        this.themeStylesheet = stylesheetFactory<any>({
-            stylesObject: mergeThemesStylesObjects(this.themes),
-            disableStylesParsing: isHydrationMode(this.renderMode),
-            type: 'template',
-        });
+
         this.renderer.render({
-            ...this.propertiesStylesheet.parsedStyles,
-            ...this.themeStylesheet.parsedStyles,
+            ...this.internalGlobalStylesheet.parsedStyles,
             ...GlossiaContextManager.getGlobalStyles().reduce((acc, s) => ({
                 ...acc,
                 ...s.stylesheet.parsedStyles,
@@ -148,7 +152,7 @@ export class RenderContext implements IRenderContext {
     destroy() {
         this.propertyWatchers.clear();
         this.counter.destroy();
-        this.themeStylesheet?.destroy();
+        this.internalGlobalStylesheet?.destroy();
         this.propertiesStylesheet?.destroy();
         this.properties.clear();
         this.renderedStaticStyles.clear();

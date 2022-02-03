@@ -12,7 +12,7 @@ import type { IRenderMode } from './IRenderMode';
 
 export interface IRenderContext {
     renderedStaticStyles: Set<IStyles<any>>;
-    themeStylesheet?: IStylesheet<any>;
+    internalGlobalStylesheet?: IStylesheet<any>;
     propertiesStylesheet?: IStylesheet<any>;
     properties: Map<string, IProperty<any>>;
     virtualProperties: Map<string, IVirtualProperty<any>>;
