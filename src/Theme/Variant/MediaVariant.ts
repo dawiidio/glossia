@@ -1,6 +1,7 @@
 import type { IProperty } from '../../../types/IProperty';
 import type { IMediaVariantVariant } from '../../../types/IMediaVariant';
 import { IDefaultVariant } from '../../../types/IVariantsMap';
+import { camelToKebabCase } from '../../common';
 
 export class MediaVariant implements IMediaVariantVariant {
     constructor(
@@ -13,6 +14,10 @@ export class MediaVariant implements IMediaVariantVariant {
         if (this.property)
             return this.property.name;
 
-        return '';
+        return `${Math.round(Math.random()*1e4)}`;
+    }
+
+    toString() {
+        return `var(--${this.property?.name}-${camelToKebabCase(this.property?.getVariantName(this) || '')})`;
     }
 }

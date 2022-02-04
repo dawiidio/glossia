@@ -27,7 +27,7 @@ export function isVariant(property: object | string | number | IProperty<any> | 
     return property instanceof Variant;
 }
 
-export const isMediaVariant = (variant: IVariant | IMediaVariantVariant): variant is MediaVariant => variant instanceof MediaVariant;
+export const isMediaVariant = (variant: object | string | number | IProperty<any> | IVariant | IMediaVariantVariant): variant is MediaVariant => variant instanceof MediaVariant;
 
 export function isVirtualProperty(property: object | string | number): property is IVirtualProperty<any> {
     return property instanceof VirtualProperty;

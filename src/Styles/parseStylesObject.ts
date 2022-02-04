@@ -1,6 +1,14 @@
 import type { IParseStylesReturnData, IParseStylesArgs } from '../../types/IParseStyles';
 import type { IStylesObject } from '../../types/IStylesObject';
-import { camelToKebabCase, isClass, isProperty, isRecord, isVariant, replaceParentReference } from '../common';
+import {
+    camelToKebabCase,
+    isClass,
+    isMediaVariant,
+    isProperty,
+    isRecord,
+    isVariant,
+    replaceParentReference,
+} from '../common';
 import { createValidCssRulePath } from './createValidCssRulePath';
 
 export function parseStylesObject<S extends IStylesObject>({
@@ -15,7 +23,7 @@ export function parseStylesObject<S extends IStylesObject>({
 
     for (const [key, value] of Object.entries(styles)) {
         // this part parses key: value css properties for example "color: red;" will be parsed here
-        if ((typeof value === 'string' || typeof value === 'number' || isProperty(value) || isVariant(value)) && level !== 0) {
+        if ((typeof value === 'string' || typeof value === 'number' || isProperty(value) || isVariant(value)|| isMediaVariant(value)) && level !== 0) {
             const selectorString = parentSelectorPath.join(' ');
 
             if (!stylesAcc[selectorString])
