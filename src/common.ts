@@ -16,24 +16,24 @@ import { GlossiaContextManager } from './Context/GlossiaContextManager';
 import { Variant } from './Theme/Variant/Variant';
 import { PropertiesSet } from './Theme/Property/PropertiesSet';
 import { MediaVariant } from './Theme/Variant/MediaVariant';
-import { IMediaVariantVariant } from '../types/IMediaVariant';
+import { IMediaVariant } from '../types/IMediaVariant';
 import { IPropertyAdapter } from '../types/IPropertyAdapter';
 
 export function isProperty(property: object | string | number): property is IProperty<any> {
     return property instanceof Property || property instanceof PropertiesSet;
 }
 
-export function isVariant(property: object | string | number | IProperty<any> | IMediaVariantVariant): property is IVariant {
+export function isVariant(property: object | string | number | IProperty<any> | IMediaVariant): property is IVariant {
     return property instanceof Variant;
 }
 
-export const isMediaVariant = (variant: object | string | number | IProperty<any> | IVariant | IMediaVariantVariant): variant is MediaVariant => variant instanceof MediaVariant;
+export const isMediaVariant = (variant: object | string | number | IProperty<any> | IVariant | IMediaVariant): variant is MediaVariant => variant instanceof MediaVariant;
 
 export function isVirtualProperty(property: object | string | number): property is IVirtualProperty<any> {
     return property instanceof VirtualProperty;
 }
 
-export function extendVariantsMap(childVariants: Map<string, IVariant|IMediaVariantVariant>, parentVariants: Map<string, IVariant|IMediaVariantVariant>): Map<string, IVariant|IMediaVariantVariant> {
+export function extendVariantsMap(childVariants: Map<string, IVariant|IMediaVariant>, parentVariants: Map<string, IVariant|IMediaVariant>): Map<string, IVariant|IMediaVariant> {
     return new Map([
         ...parentVariants.entries(),
         ...childVariants.entries(),

@@ -2,7 +2,7 @@ import { IVariantsMap } from './IVariantsMap';
 import { IBaseProperty } from './IBaseProperty';
 import { IPropertyAdapter } from './IPropertyAdapter';
 import { IVariant } from './IVariant';
-import { IMediaVariantVariant } from './IMediaVariant';
+import { IMediaVariant } from './IMediaVariant';
 import { IStylesObject } from './IStylesObject';
 
 export interface IProperty<T extends IVariantsMap> extends IBaseProperty<T> {
@@ -10,5 +10,5 @@ export interface IProperty<T extends IVariantsMap> extends IBaseProperty<T> {
 
     toVariantsDefinitionObject(propertyAdapter: IPropertyAdapter): IStylesObject;
 
-    getVariantName(variant: IVariant | IMediaVariantVariant): string;
+    getVariantName(variant: IVariant | IMediaVariant): string;
 }

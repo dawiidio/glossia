@@ -2,11 +2,11 @@ import type { ITheme } from '../../types/ITheme';
 import type { IVariant } from '../../types/IVariant';
 import type { IStylesObject } from '../../types/IStylesObject';
 import { isMediaVariant, isVariant } from '../common';
-import { IMediaVariantVariant } from '../../types/IMediaVariant';
+import { IMediaVariant } from '../../types/IMediaVariant';
 import { IPropertyAdapter } from '../../types/IPropertyAdapter';
 import { getVariantStylesObject } from './Variant/common';
 
-function renderVariants(variants: Array<IVariant | IMediaVariantVariant>, propertyAdapter: IPropertyAdapter): IStylesObject {
+function renderVariants(variants: Array<IVariant | IMediaVariant>, propertyAdapter: IPropertyAdapter): IStylesObject {
     return variants.reduce<IStylesObject>((acc, variant) => {
         let val: string;
 
@@ -56,7 +56,7 @@ function renderVariants(variants: Array<IVariant | IMediaVariantVariant>, proper
 export class Theme implements ITheme {
     constructor(
         public name: string,
-        public variants: Map<string, IVariant | IMediaVariantVariant>,
+        public variants: Map<string, IVariant | IMediaVariant>,
     ) {}
 
     createThemeInitialCss(propertyAdapter: IPropertyAdapter): IStylesObject {

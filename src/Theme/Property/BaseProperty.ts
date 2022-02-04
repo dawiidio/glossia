@@ -2,13 +2,13 @@ import type { IProperty } from '../../../types/IProperty';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 import { camelToKebabCase, isMediaVariant, isVariant } from '../../common';
 import { IVariant } from '../../../types/IVariant';
-import { IMediaVariantVariant } from '../../../types/IMediaVariant';
+import { IMediaVariant } from '../../../types/IMediaVariant';
 import { IStylesObject } from '../../../types/IStylesObject';
 import { getVariantStylesObject } from '../Variant/common';
 import { IVariantsMap } from '../../../types/IVariantsMap';
 
 export class BaseProperty<T extends IVariantsMap> implements IProperty<T> {
-    private variantToNameMapping = new WeakMap<IVariant | IMediaVariantVariant, string>();
+    private variantToNameMapping = new WeakMap<IVariant | IMediaVariant, string>();
 
     constructor(
         public readonly name: string,

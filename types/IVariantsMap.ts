@@ -1,9 +1,9 @@
 import { IVariant } from './IVariant';
-import { IMediaVariantVariant } from './IMediaVariant';
+import { IMediaVariant } from './IMediaVariant';
 
-export type IVariantsMap = Record<string, IVariant | IMediaVariantVariant>;
+export type IVariantsMap = Record<string, IVariant | IMediaVariant>;
 
 export interface IDefaultVariant extends IVariantsMap {
-    default: IVariant | IMediaVariantVariant;
+    default: IVariant | IMediaVariant;
 }
 

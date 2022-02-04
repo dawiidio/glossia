@@ -1,9 +1,9 @@
 import type { IProperty } from '../../../types/IProperty';
-import type { IMediaVariantVariant } from '../../../types/IMediaVariant';
+import type { IMediaVariant } from '../../../types/IMediaVariant';
 import { IDefaultVariant } from '../../../types/IVariantsMap';
 import { camelToKebabCase } from '../../common';
 
-export class MediaVariant implements IMediaVariantVariant {
+export class MediaVariant implements IMediaVariant {
     constructor(
         public mediaQueries: IDefaultVariant,
         public property?: IProperty<any>,
