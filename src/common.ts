@@ -183,7 +183,7 @@ export const SSR_RENDERER_ID = 'glossia-ssr-styles';
 const DATA_ATTRIBUTE = 'data-classes-mapping';
 
 export function renderContextToHtmlString(ctx: IRenderContext, elementId = SSR_RENDERER_ID): string {
-    return `<style id='${elementId}' ${DATA_ATTRIBUTE}='${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', '\'')}'>${ctx}</style>`;
+    return `<style id="${elementId}" ${DATA_ATTRIBUTE}="${JSON.stringify(ctx.getStylesClassMapping()).replaceAll('"', '\'')}">${ctx}</style>`;
 }
 
 export function getHydrationModeOptions(elementId = SSR_RENDERER_ID): Pick<ICreateContext, 'prerenderedData' | 'mode'> {
