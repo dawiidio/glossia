@@ -43,8 +43,8 @@ export class BaseProperty<T extends IVariantsMap> implements IProperty<T> {
 
                         return {
                             ...acc2,
-                            [`@media ${key}`]: {
-                                ...((acc[`@media ${key}`] as {}) || {}),
+                            [`${key}`]: {
+                                ...((acc[`${key}`] as {}) || {}),
                                 ...getVariantStylesObject({
                                     variant: val2 as IVariant,
                                     variantName,

@@ -20,8 +20,8 @@ function renderVariants(variants: Array<IVariant | IMediaVariant>, propertyAdapt
 
                 return {
                     ...acc2,
-                    [`@media ${key}`]: {
-                        ...((acc[`@media ${key}`] as {}) || {}),
+                    [`${key}`]: {
+                        ...((acc[`${key}`] as {}) || {}),
                         ...getVariantStylesObject({
                             variant: val2 as IVariant,
                             propertyName: variant.property?.name,

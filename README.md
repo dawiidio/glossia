@@ -197,7 +197,7 @@ Media variants are variants with additional media rules
 
 ```tsx
 export const breakpoints = {
-    l: 'all and (min-width: 1200px)',
+    l: '@media all and (min-width: 1200px)',
 };
 
 export const test = createProperty('test', {
