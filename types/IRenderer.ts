@@ -6,6 +6,7 @@ export interface IRendererOptions {
 }
 
 export interface IRenderer {
+    allStyles: Map<string, string>
     render(styles: IFlatStylesObject): void
     clean(styles: IFlatStylesObject): void
     toString(): string

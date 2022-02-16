@@ -1,6 +1,6 @@
 import type { IVariant } from '../../../types/IVariant';
+import type { IProperty } from '../../../types/IProperty';
 import { camelToKebabCase } from '../../common';
-import { IProperty } from '../../../types/IProperty';
 
 export class Variant implements IVariant {
     constructor(

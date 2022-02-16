@@ -3,7 +3,7 @@ import {
     camelToKebabCase,
     createRootClassName,
     includesParentReference,
-    isCSSRule,
+    isCSSRule, isKeyframesRule,
     isRootPseudoRule,
     replaceParentReference,
     shouldCreateClassSelector,
@@ -13,13 +13,18 @@ export function createValidCssRulePath(ruleOrSelector: string, parent: ICSSRuleP
     parent = parent[0] === '' ? parent.slice(1) : parent;
 
     if (isCSSRule(ruleOrSelector) && !parent.length) {
-        return [`${ruleOrSelector} {`];
+        if (isKeyframesRule(ruleOrSelector)) {
+            return [`${ruleOrSelector} {`];
+        }
+
+        // rules are accumulated and parsed in parseStylesObject that's why we can return here empty string in case if path starts with rule
+        return [''];
     } else if (isCSSRule(ruleOrSelector) && parent.length) {
         if (isCSSRule(parent[0])) {
             throw new Error(`Rules can not extend: ${parent.join(' ')}`);
         }
-
-        return [`${ruleOrSelector} {`, ...parent];
+        // in this case we handle parsing media objects in other places so here return only selectors without media rules
+        return [...parent];
     } else if (isRootPseudoRule(ruleOrSelector)) {
         return [`${ruleOrSelector}`];
     } else {

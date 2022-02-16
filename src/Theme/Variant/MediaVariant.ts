@@ -1,6 +1,6 @@
 import type { IProperty } from '../../../types/IProperty';
 import type { IMediaVariant } from '../../../types/IMediaVariant';
-import { IDefaultVariant } from '../../../types/IVariantsMap';
+import type { IDefaultVariant } from '../../../types/IVariantsMap';
 import { camelToKebabCase } from '../../common';
 
 export class MediaVariant implements IMediaVariant {

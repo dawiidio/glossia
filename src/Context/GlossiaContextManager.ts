@@ -1,15 +1,13 @@
 import type { IStylesObject } from '../../types/IStylesObject';
 import type { IStyles } from '../../types/IStyles';
 import type { ICreateContext } from '../../types/IGlossiaContextManager';
-import { isSSR, isSSRMode, RENDERER_ID, SSR_RENDERER_ID } from '../common';
+import { getId, isSSR, isSSRMode, RENDERER_ID, SSR_RENDERER_ID } from '../common';
 import { rendererFactory } from '../Renderer/rendererFactory';
 import { counterFactory } from '../Counter/counterFactory';
 import { propertyAdapterFactory } from '../Theme/Property/propertyAdapterFactory';
 import { RenderContext } from './RenderContext';
 import { Styles } from './Styles';
 import { GlobalStyles } from './GlobalStyles';
-
-const getId = (): number => Math.round(Math.random() * 1e6);
 
 export class GlossiaContextManager {
     private static contexts = new Map<number, RenderContext>();

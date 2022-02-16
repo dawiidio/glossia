@@ -8,10 +8,9 @@ import type { IPropertyAdapter } from '../../types/IPropertyAdapter';
 import type { ITheme } from '../../types/ITheme';
 import {
     isHydrationMode,
-    isProperty,
     isSSRMode,
-    isVirtualProperty, mergeManyIStylesObjects,
-    mergeThemesStylesObjects,
+    isVirtualProperty, mergeManyIStylesObjects, mergeMediaObject,
+    mergeThemesStylesObjects, mediaObjectToFlatStylesObject,
 } from '../common';
 import type { IVariant } from '../../types/IVariant';
 import { createPropertiesCss } from '../Theme/Property/createPropertiesCss';
@@ -21,11 +20,14 @@ import type { IPropertyWatcher } from '../../types/IPropertyWatcher';
 import type { IRenderMode } from '../../types/IRenderMode';
 import type { IStylesheet } from '../../types/IStylesheet';
 import { GlossiaContextManager } from './GlossiaContextManager';
+import { MediaObject } from '../../types/IParseStyles';
+import { isProperty } from '../Theme/Property/isProperty';
 
 export class RenderContext implements IRenderContext {
     readonly renderedStaticStyles = new Set<Styles<any>>();
     internalGlobalStylesheet?: IStylesheet<any>;
     propertiesStylesheet?: IStylesheet<any>;
+    media: MediaObject = {};
     readonly properties = new Map<string, IProperty<any>>();
     readonly virtualProperties = new Map<string, IVirtualProperty<any>>();
     readonly virtualPropertyStorage = new InMemoryPropertyAdapter();
@@ -60,6 +62,11 @@ export class RenderContext implements IRenderContext {
         this.renderGlobalStylesheets();
     }
 
+    private renderMedia(media: MediaObject) {
+        this.media = mergeMediaObject(this.media, media);
+        this.renderer.render(mediaObjectToFlatStylesObject(this.media));
+    }
+
     useStyles(styles: Styles<any>) {
         if (!this.developmentMode) { // in development mode style may be overwritten
             if (this.renderedNamespacesClassMapping[styles.namespace])
@@ -67,6 +74,10 @@ export class RenderContext implements IRenderContext {
 
             if (this.renderedStaticStyles.has(styles))
                 return;
+        }
+
+        if (styles.stylesheet.hasMedia()) {
+            this.renderMedia(styles.stylesheet.media);
         }
 
         this.renderedStaticStyles.add(styles);
@@ -131,6 +142,10 @@ export class RenderContext implements IRenderContext {
             disableStylesParsing: isHydrationMode(this.renderMode),
             type: 'template',
         });
+
+        if (this.internalGlobalStylesheet.hasMedia()) {
+            this.renderMedia(this.internalGlobalStylesheet.media);
+        }
 
         this.renderer.render({
             ...this.internalGlobalStylesheet.parsedStyles,

@@ -1,6 +1,6 @@
-import { IVariant } from '../../../types/IVariant';
-import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
-import { IStylesObject } from '../../../types/IStylesObject';
+import type { IVariant } from '../../../types/IVariant';
+import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
+import type { IStylesObject } from '../../../types/IStylesObject';
 
 export interface GetVariantObjectArgs {
     variant: IVariant;

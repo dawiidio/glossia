@@ -9,6 +9,7 @@ import type { IPropertyWatcher } from './IPropertyWatcher';
 import type { IStyles } from './IStyles';
 import type { IStylesheet } from './IStylesheet';
 import type { IRenderMode } from './IRenderMode';
+import type { MediaObject } from './IParseStyles';
 
 export interface IRenderContext {
     renderedStaticStyles: Set<IStyles<any>>;
@@ -22,6 +23,7 @@ export interface IRenderContext {
     readonly renderer: IRenderer;
     readonly counter: ICounter;
     readonly propertyAdapter: IPropertyAdapter;
+    media: MediaObject;
     allProperties: Array<IProperty<any> | IVirtualProperty<any>>;
     themes: ITheme[];
     renderMode: IRenderMode;

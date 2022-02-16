@@ -2,14 +2,15 @@ import type { IParseStylesReturnData, IParseStylesArgs } from '../../types/IPars
 import type { IStylesObject } from '../../types/IStylesObject';
 import {
     camelToKebabCase,
-    isClass,
+    isClass, isCSSRule, isMediaRule,
     isMediaVariant,
-    isProperty,
     isRecord,
-    isVariant,
+    isVariant, mergeMediaObject,
     replaceParentReference,
 } from '../common';
 import { createValidCssRulePath } from './createValidCssRulePath';
+import { MediaObject } from '../../types/IParseStyles';
+import { isProperty } from '../Theme/Property/isProperty';
 
 export function parseStylesObject<S extends IStylesObject>({
                                                                parentSelectorPath = [''],
@@ -20,6 +21,7 @@ export function parseStylesObject<S extends IStylesObject>({
                                                            }: IParseStylesArgs<S>): IParseStylesReturnData<S> {
     let stylesAcc: Record<string, Record<string, string> | string> = {};
     let stylesClassesMapping: Record<keyof S, string> = {} as Record<keyof S, string>;
+    let media: MediaObject = {};
 
     for (const [key, value] of Object.entries(styles)) {
         // this part parses key: value css properties for example "color: red;" will be parsed here
@@ -55,6 +57,7 @@ export function parseStylesObject<S extends IStylesObject>({
 
             const {
                 styles: ss,
+                media: mm
             } = parseStylesObject<S>({
                 // @ts-ignore
                 styles,
@@ -63,15 +66,25 @@ export function parseStylesObject<S extends IStylesObject>({
                 global
             });
 
-            stylesAcc = {
-                ...stylesAcc,
-                ...ss,
-            };
+            if (isMediaRule(key)) {
+                media = mergeMediaObject(media, {
+                    [key]: ss
+                });
+            }
+            else {
+                media = mergeMediaObject(media, mm);
+
+                stylesAcc = {
+                    ...stylesAcc,
+                    ...ss,
+                };
+            }
         }
     }
 
     return {
         styles: stylesAcc,
         stylesClassesMapping,
+        media
     };
 }

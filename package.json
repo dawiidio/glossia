@@ -14,15 +14,19 @@
     "react": ">=16.8.6"
   },
   "devDependencies": {
+    "@types/jest": "^27.4.0",
     "@types/node": "^12.20.37",
     "@types/react-dom": "^16.0.8",
+    "jest": "^27.5.1",
     "react-dom": "^16.8.6",
     "typescript": "^4.5.2"
   },
   "scripts": {
     "build": "node scripts/build.js",
+    "build-prod": "node scripts/build.js -p",
     "watch": "tsc -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build-prod",
+    "test": "jest dist"
   },
   "browserslist": {
     "production": [

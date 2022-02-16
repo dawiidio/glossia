@@ -9,18 +9,49 @@ import type { ITheme } from '../types/ITheme';
 import type { IRenderMode } from '../types/IRenderMode';
 import type { IRenderContext } from '../types/IRenderContext';
 import type { ICreateContext } from '../types/IGlossiaContextManager';
-import { Property } from './Theme/Property/Property';
+import type { IMediaVariant } from '../types/IMediaVariant';
+import type { IPropertyAdapter } from '../types/IPropertyAdapter';
+import type { MediaObject } from '../types/IParseStyles';
 import { useLayoutEffect } from 'react';
 import { VirtualProperty } from './Theme/Variant/VirtualProperty';
 import { GlossiaContextManager } from './Context/GlossiaContextManager';
 import { Variant } from './Theme/Variant/Variant';
-import { PropertiesSet } from './Theme/Property/PropertiesSet';
 import { MediaVariant } from './Theme/Variant/MediaVariant';
-import { IMediaVariant } from '../types/IMediaVariant';
-import { IPropertyAdapter } from '../types/IPropertyAdapter';
 
-export function isProperty(property: object | string | number): property is IProperty<any> {
-    return property instanceof Property || property instanceof PropertiesSet;
+export const getId = (): number => Math.round(Math.random() * 1e6);
+
+export function mergeMediaObject(m1: MediaObject, m2: MediaObject): MediaObject {
+    const allMediaRules = new Set([
+        ...Object.keys(m1),
+        ...Object.keys(m2),
+    ]);
+    const mediaAcc: MediaObject = {};
+
+    for (const key of allMediaRules) {
+        mediaAcc[key] = {
+            ...(m1[key] || {}),
+            ...(m2[key] || {}),
+        };
+    }
+
+    return mediaAcc;
+}
+
+export function mediaObjectToFlatStylesObject(m: MediaObject): IFlatStylesObject {
+    return Object.entries(m).reduce<IFlatStylesObject>((acc, [key, styles]) => {
+        return {
+            [key+' {']: Object.entries(styles).reduce((stylesAcc, [selector, styles]) => {
+                // @ts-ignore
+                return `${stylesAcc} ${selector} {${stringifyCssPropertiesObject(styles)}}`;
+            }, '')+'}'
+        };
+    }, {});
+}
+
+function stringifyCssPropertiesObject(styles: Record<string, string>): string {
+    return Object.entries(styles).reduce((acc, [key, val]) => {
+        return `${acc} ${key}:${val};`;
+    }, '');
 }
 
 export function isVariant(property: object | string | number | IProperty<any> | IMediaVariant): property is IVariant {
@@ -125,6 +156,11 @@ export function parseMediaAcc(mediaAcc: Record<string, Record<string, string>>):
     }, {});
 }
 
+/**
+ *
+ * @deprecated this function will be removed after move keyframes parsing to the same mechanism as @media rules in parseStylesObject.ts
+ * @param fso
+ */
 export function fixMediaRules(fso: IParsedStyles): IFlatStylesObject {
     let mediaAcc: Record<string, Record<string, string>> = {};
     let acc: Record<string, string> = {};

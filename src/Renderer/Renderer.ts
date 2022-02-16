@@ -2,7 +2,7 @@ import type { IRenderer } from '../../types/IRenderer';
 import type { IFlatStylesObject } from '../../types/IFlatStylesObject';
 
 export abstract class Renderer implements IRenderer {
-    protected allStyles = new Map<string, string>();
+    public readonly allStyles = new Map<string, string>();
 
     render(styles: IFlatStylesObject): void {
         for (const [selector, stylesString] of Object.entries(styles)) {

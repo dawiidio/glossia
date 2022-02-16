@@ -1,11 +1,11 @@
 import type { IProperty } from '../../../types/IProperty';
 import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
+import type { IVariantsMap } from '../../../types/IVariantsMap';
+import type { IVariant } from '../../../types/IVariant';
+import type { IMediaVariant } from '../../../types/IMediaVariant';
+import type { IStylesObject } from '../../../types/IStylesObject';
 import { camelToKebabCase, isMediaVariant, isVariant } from '../../common';
-import { IVariant } from '../../../types/IVariant';
-import { IMediaVariant } from '../../../types/IMediaVariant';
-import { IStylesObject } from '../../../types/IStylesObject';
 import { getVariantStylesObject } from '../Variant/common';
-import { IVariantsMap } from '../../../types/IVariantsMap';
 
 export class BaseProperty<T extends IVariantsMap> implements IProperty<T> {
     private variantToNameMapping = new WeakMap<IVariant | IMediaVariant, string>();

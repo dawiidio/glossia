@@ -1,8 +1,8 @@
 import type { IVariantsMap } from '../../../types/IVariantsMap';
 import type { IProperty } from '../../../types/IProperty';
-import { IVariant } from '../../../types/IVariant';
-import { IFlatStylesObject } from '../../../types/IFlatStylesObject';
-import { IPropertyAdapter } from '../../../types/IPropertyAdapter';
+import type { IVariant } from '../../../types/IVariant';
+import type { IFlatStylesObject } from '../../../types/IFlatStylesObject';
+import type { IPropertyAdapter } from '../../../types/IPropertyAdapter';
 
 export class VirtualProperty<T extends IVariantsMap = IVariantsMap> implements IProperty<T> {
     constructor(

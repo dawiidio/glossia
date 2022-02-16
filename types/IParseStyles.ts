@@ -11,8 +11,11 @@ export interface IParseStylesArgs<S extends IStylesObject> {
     global?: boolean
 }
 
+export type MediaObject = Record<string, IParsedStyles>;
+
 export interface IParseStylesReturnData<S extends IStylesObject> {
     styles: IParsedStyles
+    media: MediaObject
     stylesClassesMapping: Record<keyof S, string>
 }
 
