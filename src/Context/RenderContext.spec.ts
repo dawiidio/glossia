@@ -55,6 +55,8 @@ describe('RenderContext', () => {
 
         const stylesStr = ctx.renderer.allStyles.get(breakpoints.l+' {');
 
+        console.log(ctx.toString());
+
         expect(typeof stylesStr).toEqual('string');
         expect((stylesStr || '').includes('.test-cls')).toBe(true);
         expect((stylesStr || '').includes(':root')).toBe(true);

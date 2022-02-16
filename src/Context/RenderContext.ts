@@ -76,12 +76,12 @@ export class RenderContext implements IRenderContext {
                 return;
         }
 
+        this.renderedStaticStyles.add(styles);
+        this.renderer.render(styles.stylesheet.parsedStyles);
+
         if (styles.stylesheet.hasMedia()) {
             this.renderMedia(styles.stylesheet.media);
         }
-
-        this.renderedStaticStyles.add(styles);
-        this.renderer.render(styles.stylesheet.parsedStyles);
     }
 
     getStylesClassMapping(): Record<string, Record<string, string>> {
@@ -143,10 +143,6 @@ export class RenderContext implements IRenderContext {
             type: 'template',
         });
 
-        if (this.internalGlobalStylesheet.hasMedia()) {
-            this.renderMedia(this.internalGlobalStylesheet.media);
-        }
-
         this.renderer.render({
             ...this.internalGlobalStylesheet.parsedStyles,
             ...GlossiaContextManager.getGlobalStyles().reduce((acc, s) => ({
@@ -154,6 +150,10 @@ export class RenderContext implements IRenderContext {
                 ...s.stylesheet.parsedStyles,
             }), {}),
         });
+
+        if (this.internalGlobalStylesheet.hasMedia()) {
+            this.renderMedia(this.internalGlobalStylesheet.media);
+        }
     }
 
     isThemeRendered(theme: ITheme) {
