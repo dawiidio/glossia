@@ -6,6 +6,10 @@ export abstract class Renderer implements IRenderer {
 
     render(styles: IFlatStylesObject): void {
         for (const [selector, stylesString] of Object.entries(styles)) {
+            if (this.allStyles.has(selector)) {
+                this.allStyles.delete(selector);
+            }
+
             this.allStyles.set(selector, stylesString);
         }
     }
