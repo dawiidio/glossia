@@ -55,11 +55,39 @@ describe('RenderContext', () => {
 
         const stylesStr = ctx.renderer.allStyles.get(breakpoints.l+' {');
 
-        console.log(ctx.toString());
-
         expect(typeof stylesStr).toEqual('string');
         expect((stylesStr || '').includes('.test-cls')).toBe(true);
         expect((stylesStr || '').includes(':root')).toBe(true);
         expect((stylesStr || '').includes('--background-default:blue;')).toBe(true);
+    });
+
+    test('Should merge different media rules without loosing any', () => {
+        const ctx = getContext();
+
+        ctx.useStyles(new Styles<any>({
+            [breakpoints.l]: {
+                testCls: {
+                    width: '100%'
+                }
+            },
+            [breakpoints.xl]: {
+                testCls2: {
+                    width: '100%'
+                }
+            },
+            [breakpoints.s]: {
+                testCls3: {
+                    width: '100%'
+                }
+            },
+        }, 'namespace'));
+
+        const stylesStrL = ctx.renderer.allStyles.get(breakpoints.l+' {');
+        const stylesStrXL = ctx.renderer.allStyles.get(breakpoints.xl+' {');
+        const stylesStrS = ctx.renderer.allStyles.get(breakpoints.s+' {');
+
+        expect(typeof stylesStrL).toEqual('string');
+        expect(typeof stylesStrXL).toEqual('string');
+        expect(typeof stylesStrS).toEqual('string');
     });
 });

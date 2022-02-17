@@ -8,7 +8,7 @@ import { ITheme } from '../types/ITheme';
 import { createTheme } from './Theme/createTheme';
 
 export const breakpoints = {
-    xl: '@media all and (min-width: 1200px)',
+    xl: '@media all and (min-width: 1500px)',
     l: '@media all and (min-width: 1200px)',
     m: '@media all and (min-width: 700px)',
     s: '@media all and (min-width: 400px)',
@@ -63,7 +63,7 @@ export function createTestPropertiesAndThemes(): PropertiesAndThemes {
     const fontSizes = createPropertiesSet('font-sizes', {
         h1: createMediaVariant({
             default: createVariant('1.5rem'),
-            [breakpoints.l]: createVariant('2.2rem'),
+            [breakpoints.xl]: createVariant('2.2rem'),
         }),
         menuItem: createVariant('2.67rem'),
         base: createVariant('18px'),

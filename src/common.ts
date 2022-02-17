@@ -40,6 +40,7 @@ export function mergeMediaObject(m1: MediaObject, m2: MediaObject): MediaObject 
 export function mediaObjectToFlatStylesObject(m: MediaObject): IFlatStylesObject {
     return Object.entries(m).reduce<IFlatStylesObject>((acc, [key, styles]) => {
         return {
+            ...acc,
             [key+' {']: Object.entries(styles).reduce((stylesAcc, [selector, styles]) => {
                 // @ts-ignore
                 return `${stylesAcc} ${selector} {${stringifyCssPropertiesObject(styles)}}`;
